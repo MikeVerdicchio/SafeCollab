@@ -41,4 +41,8 @@ def test_fact1():
 if __name__ == "__main__":
     print("mliao")
     test_fact1()
+<<<<<<< HEAD
     print("Jisu")
+=======
+    print("Mike")
+>>>>>>> 33d23de9ab08c8368e705076b6ed88a274baa176
