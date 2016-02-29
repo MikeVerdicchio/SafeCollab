@@ -39,4 +39,4 @@ def test_fact1():
         print("You cannot take the factorial of a negative number!")
 
 if __name__ == "__main__":
-    print("Mike1")
+    print("Mike2")
