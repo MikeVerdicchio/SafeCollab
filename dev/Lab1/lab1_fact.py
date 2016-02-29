@@ -39,4 +39,5 @@ def test_fact1():
         print("You cannot take the factorial of a negative number!")
 
 if __name__ == "__main__":
+    print("tahiya")
     test_fact1()
