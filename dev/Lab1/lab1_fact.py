@@ -41,4 +41,3 @@ def test_fact1():
 if __name__ == "__main__":
     print("mliao")
     test_fact1()
-    print("Mike")
