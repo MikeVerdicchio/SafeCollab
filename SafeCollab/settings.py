@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'FileUpload',
     'auth',
+    'widget_tweaks',
 )
 
 MIDDLEWARE_CLASSES = (
