@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate, login
 
 def login_user(request):
+    logout(request)
     state = "Login to SafeCollab."
     username = password = ''
     if request.method == 'POST':
@@ -19,3 +20,6 @@ def login_user(request):
         else:
             state = "Your username and/or password were incorrect."
     return render_to_response('auth.html', {'state':state, 'username':username}, context_instance=RequestContext(request))
+
+def logout(request):
+    logout(request)
