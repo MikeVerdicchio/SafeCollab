@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
@@ -25,7 +26,6 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -36,7 +36,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'FileUpload',
-    'auth',
+    'SafeCollab.apps.AuthConfig',
+    'widget_tweaks',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -52,7 +53,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'SafeCollab.urls'
 
 WSGI_APPLICATION = 'SafeCollab.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -85,20 +85,20 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = os.path.join(PROJECT_ROOT, 'static/')
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
+    os.path.join(PROJECT_ROOT, 'templates'),
+    os.path.join(PROJECT_ROOT, 'auth/templates'),
 )
 
 LOGIN_URL = '/login/'
 
 if os.environ.get('DATABASE_URL'):
     import dj_database_url
+
     db_from_env = dj_database_url.config(conn_max_age=500)
     DATABASES['default'].update(db_from_env)
-
