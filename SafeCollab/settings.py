@@ -36,7 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'FileUpload',
-    'auth',
+#    'auth',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -66,6 +66,11 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# Media
+# https://docs.djangoproject.com/en/1.7/ref/settings/#static-files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
