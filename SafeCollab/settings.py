@@ -64,7 +64,7 @@ DATABASES = {
         'PASSWORD': 'dev',
         'HOST': '127.0.0.1',
         'PORT': '5432',
-    }
+    },
 }
 
 # Media
