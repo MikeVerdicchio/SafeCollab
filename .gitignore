@@ -60,3 +60,9 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+.idea/cs3240-s16-team3.iml
+
+*.iml
+
+*.iml
