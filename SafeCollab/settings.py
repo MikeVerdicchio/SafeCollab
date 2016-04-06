@@ -38,6 +38,8 @@ INSTALLED_APPS = (
     'FileUpload',
     'SafeCollab.apps.AuthConfig',
     'widget_tweaks',
+    'home',
+    'encrypt',
 )
 
 MIDDLEWARE_CLASSES = (

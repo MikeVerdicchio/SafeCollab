@@ -20,3 +20,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^encrypt/', views.index, name='encryptionpage')
 ]
+
+# http://127.0.0.1:8000/encrypt
