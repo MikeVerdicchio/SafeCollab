@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'SafeCollab.apps.AuthConfig',
     'widget_tweaks',
     'home',
+    'django_tables2',
     'encrypt',
 )
 
@@ -90,11 +91,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-STATIC_URL = os.path.join(PROJECT_ROOT, 'static/')
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'templates'),
-    os.path.join(PROJECT_ROOT, 'auth/templates'),
+    os.path.join(BASE_DIR, 'templates'),
+    # os.path.join(PROJECT_ROOT, 'auth/templates'),
 )
 
 LOGIN_URL = '/login/'
