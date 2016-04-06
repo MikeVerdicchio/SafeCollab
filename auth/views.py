@@ -36,3 +36,4 @@ def index(request):
         return render(request, 'index.html')
     else:
         return render(request, 'login.html')
+        # return redirect('quizzes.views.quizView', quizNumber=quizNumber)
