@@ -23,7 +23,7 @@ def login_user(request):
                 state = "Your account is not active, please contact the site admin."
         else:
             state = "Your username and/or password were incorrect."
-    return render(request, 'auth.html', {'state': state, 'username': username, 'password': password})
+    return render(request, 'login.html', {'state': state, 'username': username, 'password': password})
 
 
 def logout_user(request):
@@ -35,4 +35,4 @@ def index(request):
     if request.user.is_authenticated():
         return render(request, 'index.html')
     else:
-        return render(request, 'auth.html')
+        return render(request, 'login.html')

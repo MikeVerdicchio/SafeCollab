@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'FileUpload',
     'SafeCollab.apps.AuthConfig',
     'widget_tweaks',
+    'django_tables2',
     'encrypt',
 )
 
@@ -92,8 +93,8 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'templates'),
-    os.path.join(PROJECT_ROOT, 'auth/templates'),
+    os.path.join(BASE_DIR, 'templates'),
+    # os.path.join(PROJECT_ROOT, 'auth/templates'),
 )
 
 LOGIN_URL = '/login/'
