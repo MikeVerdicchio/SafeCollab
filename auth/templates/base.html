@@ -30,8 +30,8 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="">Home</a></li>
                 {% if user.is_authenticated %}
-                    <p class="navbar-text navbar-right">Signed in as <a href="/logout/" class="navbar-link">
-                    {{ user.username }}</a>.</p>
+                    <p class="navbar-text navbar-right">Signed in as {{ user.username }}.</p>
+                    <li><a href="/logout/">Logout</a></li>
                 {% else %}
                     <li><a href="/login/">Login</a></li>
                 {% endif %}
