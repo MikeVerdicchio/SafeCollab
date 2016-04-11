@@ -35,12 +35,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'FileUpload',
+    #'FileUpload',
     'SafeCollab.apps.AuthConfig',
     'widget_tweaks',
     'home',
     'django_tables2',
     'encrypt',
+    'report_database'
 )
 
 MIDDLEWARE_CLASSES = (
