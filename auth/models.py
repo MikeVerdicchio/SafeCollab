@@ -12,7 +12,6 @@ from django.db import models
 
 # Models for data tables
 # https://docs.djangoproject.com/en/1.9/topics/db/models/
-
 class User(models.Model):
     username = models.CharField(max_length=128)
     site_manager = models.BooleanField()

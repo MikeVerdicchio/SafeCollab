@@ -7,9 +7,9 @@
             <br><br>
             <h1>Welcome to SafeCollab!</h1>
             {% if user.is_authenticated %}
-                <p>Hello {{ user.username }}!</p>
+                <p>Hello {{ user.first_name }} {{ user.last_name }}. How are you today?</p>
             {% else %}
-                <p>Please <a href="/login/">log in</a> before you can view reports!</p>
+                <p>Please <a href="/login/">log in</a> or <a href="/register/">register</a> before you can view reports!</p>
             {% endif %}
         </div>
     </div>
