@@ -7,7 +7,8 @@ class LoginForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
-    name = forms.CharField(label='Name', max_length=30)
+    first = forms.CharField(label='First Name', max_length=30)
+    last = forms.CharField(label='Last Name', max_length=30)
     username = forms.CharField(label='Username', max_length=30)
     email = forms.EmailField(label='Email', max_length=50)
     password = forms.CharField(label='Password')
