@@ -100,6 +100,7 @@ TEMPLATE_DIRS = (
 )
 
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/login'
 
 if os.environ.get('DATABASE_URL'):
     import dj_database_url
