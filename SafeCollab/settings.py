@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'home',
     'django_tables2',
     'encrypt',
+    'django_messages',
 )
 
 MIDDLEWARE_CLASSES = (
