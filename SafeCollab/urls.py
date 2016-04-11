@@ -18,5 +18,5 @@ urlpatterns = patterns('',
                        url(r'^FileUpload/', include('FileUpload.urls')),
                        #url(r'^$', RedirectView.as_view(url='/FileUpload/list/', permanent=False)),
                        #url(r'^upload/$', 'FileUpload.views.index'),
-                       url(r'^messages/', include('django_messages.urls')),
+                       url(r'^messages/', include('django_messages.urls', namespace='messages')),
                        ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
