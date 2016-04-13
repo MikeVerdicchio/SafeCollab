@@ -16,12 +16,6 @@
     var data = "{{ data }}";
     var key = "{{ key }}";
     var encode = "{{Function}}"
-
-
-    console.log("POINTA");
-    console.log(data);
-    console.log("POINTB");
-    console.log(key);
     if(data != "") {
         var div = document.getElementById("result");
         html = "<h1>Encrypted Text</h1>";
@@ -30,7 +24,6 @@
         html += "<h1>Used the following key:</h1>";
         html += key;
         div.innerHTML = html;
-        console.log(html);
 
     }
 

@@ -13,3 +13,5 @@ class RegisterForm(forms.Form):
     email = forms.EmailField(label='Email', max_length=50)
     password = forms.CharField(label='Password')
     confirm = forms.CharField(label='Confirm Password')
+
+
