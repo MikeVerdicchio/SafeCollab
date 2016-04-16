@@ -9,5 +9,5 @@
 
 --
 {% blocktrans %}Sent from {{ site_url }}{% endblocktrans %}
-{% trans "Inbox" %}: {{ site_url }}{% url 'messages_inbox' %}
-{% trans "Reply" %}: {{ site_url }}{% url 'messages_reply' message.pk %}     
+{% trans "Inbox" %}: {{ site_url }}{% url 'messages:messages_inbox' %}
+{% trans "Reply" %}: {{ site_url }}{% url 'messages:messages_reply' message.pk %}
