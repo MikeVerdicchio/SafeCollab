@@ -35,13 +35,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'FileUpload',
+    #'FileUpload',
     'SafeCollab.apps.AuthConfig',
     'widget_tweaks',
     'home',
     'django_tables2',
     'encrypt',
     'django_messages',
+    'report_database',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -94,12 +95,14 @@ USE_TZ = True
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
     # os.path.join(PROJECT_ROOT, 'auth/templates'),
 )
 
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/login'
 
 if os.environ.get('DATABASE_URL'):
     import dj_database_url

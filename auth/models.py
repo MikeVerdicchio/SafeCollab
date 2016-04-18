@@ -12,10 +12,13 @@ from django.db import models
 
 # Models for data tables
 # https://docs.djangoproject.com/en/1.9/topics/db/models/
-
 class User(models.Model):
     username = models.CharField(max_length=128)
     site_manager = models.BooleanField()
+
+    def createReport(self, date, sdesc, ldesc, private):
+        report = self.create(creator=self, date=date, sdesc=sdesc, ldesc=ldesc, private=private)
+        return report
 
     def __str__(self):              # __unicode__ on Python 2
         return self.name
@@ -35,3 +38,13 @@ class Group(models.Model):
 class Membership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+class Report(models.Model):
+    creator = models.ForeignKey(User)
+    date = models.DateField()
+    sdesc = models.CharField(max_length=60)
+    ldesc = models.CharField(max_length=1000)
+    private = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.date

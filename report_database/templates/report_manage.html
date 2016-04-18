@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block table %}
+<body>
+
+<table style="width:100%">
+  <tr>
+    <td>Jill</td>
+    <td>Smith</td>
+    <td>50</td>
+  </tr>
+  <tr>
+    <td>Eve</td>
+    <td>Jackson</td>
+    <td>94</td>
+  </tr>
+  <tr>
+    <td>John</td>
+    <td>Doe</td>
+    <td>80</td>
+  </tr>
+</table>
+
+</body>
+{% endblock %}
+{% block bar %}
+<body>
+    <br><br>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/reports/">Report Home</a></li>
+                    <li><a href="/reports/create/">Create Reports</a></li>
+                    <li><a href="/reports/manage/">Manage Reports</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</body>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row text-center">
+            <br><br>
+            <h1>Manage</h1>
+            <table class="Reports" border="1" style="width:100%">
+                <thead>
+                    <tr>
+                        <td><strong>User</strong></td>
+                        <td><strong>Report Name</strong></td>
+                        <td><strong>Date</strong></td>
+                        <td><strong>Short Description</strong></td>
+                        <td><strong>Private Report</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for Report in report_all %}
+                    <tr>
+                        <td>{{ Report.creator }}</td>
+                        <td>{{ Report.report_name }}</td>
+                        <td>{{ Report.date }}</td>
+                        <td>{{ Report.sdesc }}</td>
+                        <td>{{ Report.private }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+
