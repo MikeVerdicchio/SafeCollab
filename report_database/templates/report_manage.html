@@ -51,7 +51,9 @@
                         <td><strong>Report Name</strong></td>
                         <td><strong>Date</strong></td>
                         <td><strong>Short Description</strong></td>
-                        <td><strong>Long Description</strong></td>
+                        <td><strong>Private Report</strong></td>
+                        <td><strong>Doesn't Work</strong></td>
+                        <td><strong>Doesn't Work</strong></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,6 +64,8 @@
                         <td>{{ Report.date }}</td>
                         <td>{{ Report.sdesc }}</td>
                         <td>{{ Report.private }}</td>
+                        <td><input type="submit" value="Edit" name="Edit"></td>
+                        <td><input type="submit" value="Delete" name="Delete"></td>
                     </tr>
                 {% endfor %}
                 </tbody>

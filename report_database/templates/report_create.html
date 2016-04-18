@@ -24,7 +24,10 @@
             <h3><strong><font color="red">{{ failure }}</font></strong></h3>
             <form method="post">
                 <fieldset>
-                    <legend>Report Information</legend>
+                    <legend>Report Information<br>
+                    <h5>*fields are required</h5>
+                    </legend>
+
                         {% csrf_token %}
                         <!--
                         <p style ="text-align: left;">Report Name:
@@ -42,9 +45,10 @@
                         <input type="file" name="file1">
                         <input type="file" name="file2">
                         -->
-                        {{form.as_p}}
+                        <table>
+                            {{ form.as_table }}
+                        </table>
                         <input type="submit" value="Submit">
-
                 </fieldset>
             </form>
         </div>

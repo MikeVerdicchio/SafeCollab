@@ -50,6 +50,8 @@ def create(request):
     else:
         return render(request, 'report_create.html')
 def manage(request):
+    if request.method=="POST":
+        hi = "hi"
     report_data = Report.objects.all()
     return render(request, 'report_manage.html', {
                 'report_all': report_data
