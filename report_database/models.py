@@ -9,7 +9,10 @@ class Report(models.Model):
     sdesc = models.CharField(max_length=60, blank=False, null=False)
     ldesc = models.CharField(max_length=1000, blank=False, null=False)
     private = models.BooleanField(default=False)
-    uploadFile = models.FileField(upload_to='documents', blank=True, null=True)
+    file_1 = models.FileField(upload_to='documents', blank=True, null=True)
+    file_2 = models.FileField(upload_to='documents', blank=True, null=True)
+    file_3 = models.FileField(upload_to='documents', blank=True, null=True)
+
 
     def __str__(self):
         return self.report_name
