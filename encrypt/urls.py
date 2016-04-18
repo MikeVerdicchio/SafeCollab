@@ -18,7 +18,9 @@ from encrypt import views
 from django.contrib import admin
 # urlpatterns = patterns(' ', url(r'^$' , views.index, name = 'index'))
 urlpatterns = [
-    url(r'^encrypt/', views.index, name='encryptionpage')
+    url(r'^encrypt/', views.index, name='encryptionpage'),
+    #added for file encryption
+    #url(r'^encrypt_file/', views.encrypt_file),
 ]
 
 # http://127.0.0.1:8000/encrypt
