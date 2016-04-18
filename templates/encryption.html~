@@ -7,8 +7,6 @@
         <input type="text" name="unencryptedtext"><br>
         <input type="submit" value="Submit">
     </form>
-    <!-- added things might need to remove -->
-     <!-- end of add -->
 </head>
 <div id="result"></div>
 </html>
