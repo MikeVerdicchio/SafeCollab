@@ -12,7 +12,7 @@
         <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
 	<form action="{% url 'download' %}" method="get" action="{{ document.docfile.url }}">
 	  <a href="{{ document.docfile.url}}" download="">Download</a>
-	  <!-- comment out <button type="submit">Download!</button> -->
+	  #<button type="submit">Download!</button>
 	</form>
         {% endfor %}
         </ul>

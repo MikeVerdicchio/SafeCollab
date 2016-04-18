@@ -9,16 +9,14 @@
     {% if documents %}
         <ul>
         {% for document in documents %}
-        <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
-	<form action="{% url 'download' %}" method="get" action="{{ document.docfile.url }}">
-	  <a href="{{ document.docfile.url}}" download="">Download</a>
-	  <!-- comment out <button type="submit">Download!</button> -->
-	</form>
+            <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
         {% endfor %}
         </ul>
     {% else %}
         <p>No documents.</p>
     {% endif %}
+
+
 
         <!-- Upload form. Note enctype attribute! -->
         <form action="{% url 'list' %}" method="post" enctype="multipart/form-data">

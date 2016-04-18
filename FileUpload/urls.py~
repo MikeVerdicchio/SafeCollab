@@ -20,7 +20,7 @@ from django.contrib import admin
 # urlpatterns = patterns(' ', url(r'^$' , views.index, name = 'index'))
 urlpatterns = patterns('FileUpload.views',
     url(r'^list/$', 'list', name='list'),
-    url(r'^download/$', 'download', name='download'),
+    url(r'^download/(?P<file_name>.+)$', 'download', name='download'),
 )
 
 if settings.DEBUG:
