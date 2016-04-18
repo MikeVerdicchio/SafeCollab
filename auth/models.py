@@ -16,7 +16,7 @@ class User(models.Model):
 class UserProfile(models.Model):
     username = models.CharField(max_length=128, default='')
     site_manager = models.BooleanField(default=False)
-    public_key = models.BinaryField(default=b'\x08')
+    public_key = models.CharField(max_length=1000, default='')
 
     # def username(self):
     #     return self.user.username
