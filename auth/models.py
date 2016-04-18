@@ -1,14 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
-
-class UserProfile(models.Model):
-    # This line is required. Links UserProfile to a User model instance.
-    user = models.OneToOneField(User)
-
-    # Override the __unicode__() method to return out something meaningful!
-    def __unicode__(self):
-        return self.user.username
-from django.db import models
 
 # Models for data tables
 # https://docs.djangoproject.com/en/1.9/topics/db/models/
@@ -22,6 +12,26 @@ class User(models.Model):
 
     def __str__(self):              # __unicode__ on Python 2
         return self.name
+
+class UserProfile(models.Model):
+    username = models.CharField(max_length=128, default='')
+    site_manager = models.BooleanField(default=False)
+    public_key = models.BinaryField(default=b'\x08')
+
+    # def username(self):
+    #     return self.user.username
+    #
+    # def public_key(self, bool):
+    #     self.user.public_key = bool
+    #     return self.user.site_manager
+    #
+    # def site_manager(self, bool):
+    #     self.user.site_manager = bool
+    #     return self.user.site_manager
+
+    # Override the __unicode__() method to return out something meaningful!
+    def __unicode__(self):
+        return self.user.username
 
 class Group(models.Model):
     GROUP_CHOICES = (

@@ -1,7 +1,8 @@
+from django.contrib.auth.admin import UserAdmin
+from auth.models import UserProfile
 from django.contrib import admin
 
-# Register your models here.
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('username','public_key', 'site_manager')
 
-from .models import Report
-
-#admin.site.register(Report)
+admin.site.register(UserProfile, UserProfileAdmin)

@@ -20,7 +20,7 @@ class ComposeForm(forms.Form):
     subject = forms.CharField(label=_(u"Subject"), max_length=120)
     body = forms.CharField(label=_(u"Body"),
         widget=forms.Textarea(attrs={'rows': '12', 'cols':'55'}))
-    
+    encrypt = forms.BooleanField(label=_(u"Encrypt"))
         
     def __init__(self, *args, **kwargs):
         recipient_filter = kwargs.pop('recipient_filter', None)
@@ -35,8 +35,11 @@ class ComposeForm(forms.Form):
         recipients = self.cleaned_data['recipient']
         subject = self.cleaned_data['subject']
         body = self.cleaned_data['body']
+        encrypt = self.cleaned_data['encrypt']
         message_list = []
         for r in recipients:
+            if encrypt == True:
+                body = 'hi'
             msg = Message(
                 sender = sender,
                 recipient = r,
