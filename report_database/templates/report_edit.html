@@ -23,29 +23,14 @@
             <h1>Report Edit Page</h1>
             <h3><strong><font color="green">{{ success }}</font></strong></h3>
             <h3><strong><font color="red">{{ failure }}</font></strong></h3>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <fieldset>
                         <legend>Report Information<br>
                         <h5>*fields are required</h5>
                         </legend>
 
                             {% csrf_token %}
-                            <!--
-                            <p style ="text-align: left;">Report Name:
-                            <input type="text" name="report_name"><br>
-                            <p style ="text-align: left;">Date:
-                            <input type="date" name="date"><br>
-                            <p style ="text-align: left;">Short Description:
-                            <input type="text" name="sdesc"><br>
-                            <p style ="text-align: left;">Long Description:
-                            <input type="text" name="ldesc"><br>
-                            <p style ="text-align: left;">Private?
-                            <input type="checkbox" name="private" value="male" checked><br>
-                            <p style ="text-align: left;">Upload File:<br>
-                            <input type="file" name="file">
-                            <input type="file" name="file1">
-                            <input type="file" name="file2">
-                            -->
+
                             <table>
                                 {{ form.as_table }}
                             </table>

@@ -18,7 +18,7 @@ def create(request):
         return render( request, 'report_create.html', page_data )
     elif request.method == "POST":
         cid = request.user.id
-        form = ReportForm( request.POST )
+        form = ReportForm( request.POST , request.FILES)
         success = ""
         failure = ""
         if form.is_valid():
@@ -89,7 +89,7 @@ def reportedit(request, report_pk):
     r = Report.objects.get(uniqueid=report_pk)
     report_data = Report.objects.all()
 
-    form = ReportForm( request.POST )
+    form = ReportForm( request.POST , request.FILES)
 
     if request.method == "POST":
         if form.is_valid():
