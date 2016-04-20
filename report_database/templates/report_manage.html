@@ -44,6 +44,8 @@
         <div class="row text-center">
             <br><br>
             <h1>Manage</h1>
+            <form method="post">
+                    {% csrf_token %}
             <table class="Reports" border="1" style="width:100%">
                 <thead>
                     <tr>
@@ -53,7 +55,7 @@
                         <td><strong>Short Description</strong></td>
                         <td><strong>Private Report</strong></td>
                         <td><strong>Doesn't Work</strong></td>
-                        <td><strong>Doesn't Work</strong></td>
+                        <td><strong>Delete</strong></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,12 +66,17 @@
                         <td>{{ Report.date }}</td>
                         <td>{{ Report.sdesc }}</td>
                         <td>{{ Report.private }}</td>
-                        <td><input type="submit" value="Edit" name="Edit"></td>
-                        <td><input type="submit" value="Delete" name="Delete"></td>
+                        <!--<td><input type="submit" value="Edit" name="Edit"></td>-->
+                        <td><a href="/reports/report_edit/{{ Report.uniqueid }}">Edit</a></td>
+                        <td><input type="checkbox" value="Delete" name={{ Report.uniqueid }} ></td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
+            <br>
+                <input type="submit" value="Delete Selected">
+            </form>
+            <br>
         </div>
     </div>
 {% endblock %}
