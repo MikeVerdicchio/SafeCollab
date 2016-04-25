@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'django_messages',
     'report_database',
     'eztables',
+    'django_extensions',
 )
 
 MIDDLEWARE_CLASSES = (
