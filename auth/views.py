@@ -50,7 +50,7 @@ def register_user(request):
                 user = User.objects.create_user(username=username, email=email, password=password, first_name=first, last_name=last)
                 user.save()
                 key = key_generation()
-                public_key = key.publickey().exportKey('PEM')
+                public_key = key.exportKey(passphrase=password, pkcs=8)
                 user_profile = UserProfile.objects.create(username=username, site_manager=site_manager, public_key=public_key)
                 user_profile.save()
                 return render(request, 'index.html')
