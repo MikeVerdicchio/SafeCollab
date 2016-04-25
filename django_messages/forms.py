@@ -4,8 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from auth.models import UserProfile
 from Crypto.PublicKey import RSA
-from base64 import b64decode
-
 
 if "notification" in settings.INSTALLED_APPS and getattr(settings, 'DJANGO_MESSAGES_NOTIFY', True):
     from notification import models as notification
@@ -24,7 +22,8 @@ class ComposeForm(forms.Form):
     subject = forms.CharField(label=_(u"Subject"), max_length=120)
     body = forms.CharField(label=_(u"Body"),
         widget=forms.Textarea(attrs={'rows': '12', 'cols':'55'}))
-    encrypt = forms.BooleanField(label=_(u"Encrypt"))
+    encrypt = forms.BooleanField(label=_(u"Encrypt"), required=False)
+    encrypt_pw = forms.CharField(label=_(u"Encrypt_pw"), required=False, max_length=120)
         
     def __init__(self, *args, **kwargs):
         recipient_filter = kwargs.pop('recipient_filter', None)
@@ -40,23 +39,22 @@ class ComposeForm(forms.Form):
         subject = self.cleaned_data['subject']
         body = self.cleaned_data['body']
         encrypt = self.cleaned_data['encrypt']
+        encrypt_pw = self.cleaned_data['encrypt_pw']
         message_list = []
+        if encrypt == True:
+            key = UserProfile.objects.get(username__exact=sender).public_key
+            try:
+                importkey = RSA.importKey(key, passphrase=encrypt_pw)
+            except ValueError:
+                print("Incorrect password")
+            body = importkey.encrypt(body.encode('utf-8'), 32)
         for r in recipients:
-            if encrypt == True:
-                # key = UserProfile.objects.get(username__exact=r).public_key
-                # key = key.replace('-----BEGIN PUBLIC KEY----- ', '')
-                # key = key.replace(' -----END PUBLIC KEY-----', '')
-
-                key = b'MIGJAoGBAJNrHWRFgWLqgzSmLBq2G89exgi/Jk1NWhbFB9gHc9MLORmP3BOCJS9konzT/+Dk1hdZf00JGgZeuJGoXK9PX3CIKQKRQRHpi5e1vmOCrmHN5VMOxGO4d+znJDEbNHODZR4HzsSdpQ9SGMSx7raJJedEIbr0IP6DgnWgiA7R1mUdAgMBAAE='
-
-                keyDER = b64decode(key)
-                key = RSA.importKey(keyDER)
-                body = key.encrypt(body.encode('utf-8'), 32)
             msg = Message(
                 sender = sender,
                 recipient = r,
                 subject = subject,
                 body = body,
+                encrypt = encrypt,
             )
             if parent_msg is not None:
                 msg.parent_msg = parent_msg
