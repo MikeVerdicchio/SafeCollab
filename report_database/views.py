@@ -6,11 +6,12 @@ from .forms import deleteReportForm
 #from .forms import EditReportForm
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, get_object_or_404
-
+from FileUpload.models import Document
 # Create your views here.
 
 def index(request):
     return render(request, 'report_home.html')
+
 def create(request):
     if request.method == "GET":
         success = ""
@@ -51,6 +52,14 @@ def create(request):
             if unique:
                 rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv, file_1=file1, encrypt_1=encrypt1, file_2=file2, encrypt_2=encrypt2, file_3=file3, encrypt_3=encrypt3)
                 rep.save()
+                #added some changes
+                #newdoc = Document(docfile = request.FILES['file_1'])
+                #newdoc.save()
+                #newdoc = Document(docfile = request.FILES['file_2'])
+                #newdoc.save()
+                #newdoc = Document(docfile = request.FILES['file_2'])
+                #newdoc.save()
+                #end changes
                 success = "Report has been saved!"
                 return render( request, 'report_create.html', {
                 'form': ReportForm(),
