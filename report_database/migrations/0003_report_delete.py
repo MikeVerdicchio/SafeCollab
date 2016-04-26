@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('AuthConfig', '0001_initial'),
+        ('report_database', '0002_auto_20160412_1821'),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='userprofile',
-            name='public_key',
-            field=models.CharField(max_length=1000, default=b'\x08'),
+        migrations.AddField(
+            model_name='report',
+            name='delete',
+            field=models.BooleanField(default=False),
         ),
     ]
