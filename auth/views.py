@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from auth.models import UserProfile
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, SMForm
 from Crypto.PublicKey import RSA
 from Crypto import Random
 from django.core.mail import EmailMessage
@@ -54,7 +54,8 @@ def register_user(request):
                 user.save()
                 key = key_generation()
                 public_key = key.exportKey(passphrase=password, pkcs=8)
-                user_profile = UserProfile.objects.create(username=username, site_manager=site_manager, public_key=public_key)
+                user = User.objects.get(username=username)
+                user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager, public_key=public_key)
                 user_profile.save()
                 message = 'Hi' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
                 email = EmailMessage('Welcome to SafeCollab', message, to=[email])
@@ -65,3 +66,28 @@ def register_user(request):
 
     return render(request, 'register.html', {'form': form})
 
+def list_users(request):
+    users = UserProfile.objects.all()
+    if request.method == "POST":
+        num_sm = UserProfile.objects.filter(site_manager=True).count()
+        sm = request.POST.getlist('sm')
+        activate = request.POST.getlist('activate')
+        if len(sm) + num_sm > 3:
+            return render(request, 'sm.html', {
+            'users': users,
+            'form': SMForm()
+        })
+        for x in sm:
+            u_p = UserProfile.objects.get(username=x)
+            u_p.site_manager = True
+            u_p.save()
+        for y in activate:
+            u_p = User.objects.get(username=y)
+            status = u_p.is_active
+            u_p.is_active = not status
+            u_p.save()
+
+    return render(request, 'sm.html', {
+        'users': users,
+        'form': SMForm()
+    })

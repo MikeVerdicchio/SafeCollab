@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block table %}
+<body>
+
+<table style="width:100%">
+  <tr>
+    <td>Jill</td>
+    <td>Smith</td>
+    <td>50</td>
+  </tr>
+  <tr>
+    <td>Eve</td>
+    <td>Jackson</td>
+    <td>94</td>
+  </tr>
+  <tr>
+    <td>John</td>
+    <td>Doe</td>
+    <td>80</td>
+  </tr>
+</table>
+
+</body>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row text-center">
+            <br><br>
+            <h1>Site Manager Admin</h1>
+            <form method="post">
+                    {% csrf_token %}
+            <table class="Site Manager Admin" border="1" style="width:100%">
+                <thead>
+                    <tr>
+                        <td><strong>User Name</strong></td>
+                        <td><strong>Site Manager Status</strong></td>
+                        <td><strong>Grant Site Manager Access</strong></td>
+                        <td><strong>Account Options</strong></td>
+                        <td><strong>Activate/Deactivate</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for UserProfile in users %}
+                    <tr>
+                        <td>{{ UserProfile.username }}</td>
+                        <td>{{ UserProfile.site_manager }}</td>
+                        <!--<td><input type="submit" value="Edit" name="Edit"></td>-->
+                        <td><input type="checkbox" name="sm" value={{ UserProfile.user }}  ></td>
+                        {% if UserProfile.user.is_active %}
+                            <td>Deactivate</td>
+                        {% else %}
+                            <td>Activate</td>
+                        {% endif %}
+                        <td><input type="checkbox" name="activate" value={{ UserProfile.user }}  ></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <br>
+                <input type="submit" value="Site Manager Access">
+            </form>
+            <br>
+        </div>
+    </div>
+{% endblock %}
+
+
