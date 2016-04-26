@@ -44,7 +44,7 @@
                         <td>{{ UserProfile.username }}</td>
                         <td>{{ UserProfile.site_manager }}</td>
                         <!--<td><input type="submit" value="Edit" name="Edit"></td>-->
-                        <td><input type="checkbox" value="site_manager" name={{ UserProfile.user_id }} ></td>
+                        <td><input type="checkbox" name="sm" value={{ UserProfile.user }}  ></td>
                     </tr>
                 {% endfor %}
                 </tbody>

@@ -63,18 +63,19 @@ def register_user(request):
 def list_users(request):
     users = UserProfile.objects.all()
     if request.method == "POST":
-        for x in users[0:]:
-            if request.POST.get(x.site_manager) is not True:
-                x.site_manager = True
-                x.save()
-    return render(request, 'sm.html', {
-                'users': users,
-                'form': SMForm()
-            })
+        num_sm = UserProfile.objects.filter(site_manager=True).count()
+        sm = request.POST.getlist('sm')
+        if len(sm) + num_sm > 3:
+            return render(request, 'sm.html', {
+            'users': users,
+            'form': SMForm()
+        })
+        for x in sm:
+            u_p = UserProfile.objects.get(username=x)
+            u_p.site_manager = True
+            u_p.save()
 
-    # if request.method == 'POST':
-    #     form = SMForm(request.POST)
-    #     if form.is_valid():
-    #         UserProfile.objects.get()
-    #
-    # return render(request, 'sm.html', {'users': users})
+    return render(request, 'sm.html', {
+        'users': users,
+        'form': SMForm()
+    })
