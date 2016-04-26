@@ -7,6 +7,8 @@ from auth.models import UserProfile
 from .forms import RegisterForm, LoginForm
 from Crypto.PublicKey import RSA
 from Crypto import Random
+from django.core.mail import EmailMessage
+
 
 def login_user(request):
     if request.method == 'POST':
@@ -18,7 +20,6 @@ def login_user(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    state = "You're successfully logged in!"
                     return render(request, 'index.html')
     else:
         form = LoginForm()
@@ -30,10 +31,12 @@ def logout_user(request):
     logout(request)
     return render(request, 'index.html')
 
+
 def key_generation():
     random_generator = Random.new().read
     key = RSA.generate(1024, random_generator)
     return key
+
 
 def register_user(request):
     if request.method == 'POST':
@@ -53,6 +56,9 @@ def register_user(request):
                 public_key = key.exportKey(passphrase=password, pkcs=8)
                 user_profile = UserProfile.objects.create(username=username, site_manager=site_manager, public_key=public_key)
                 user_profile.save()
+                message = 'Hi' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
+                email = EmailMessage('Welcome to SafeCollab', message, to=[email])
+                email.send()
                 return render(request, 'index.html')
     else:
         form = RegisterForm()
