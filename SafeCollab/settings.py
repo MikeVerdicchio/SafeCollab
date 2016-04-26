@@ -104,6 +104,9 @@ TEMPLATE_DIRS = (
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/login'
 
+AUTH_USER_MODEL = 'auth.User'
+AUTH_PROFILE_MODULE = 'auth.UserProfile'
+
 if os.environ.get('DATABASE_URL'):
     import dj_database_url
 
