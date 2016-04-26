@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from auth.models import UserProfile
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, SMForm
 from Crypto.PublicKey import RSA
 from Crypto import Random
 
@@ -62,4 +62,19 @@ def register_user(request):
 
 def list_users(request):
     users = UserProfile.objects.all()
-    return render(request, 'sm.html', {'users': users})
+    if request.method == "POST":
+        for x in users[0:]:
+            if request.POST.get(x.site_manager) is not True:
+                x.site_manager = True
+                x.save()
+    return render(request, 'sm.html', {
+                'users': users,
+                'form': SMForm()
+            })
+
+    # if request.method == 'POST':
+    #     form = SMForm(request.POST)
+    #     if form.is_valid():
+    #         UserProfile.objects.get()
+    #
+    # return render(request, 'sm.html', {'users': users})
