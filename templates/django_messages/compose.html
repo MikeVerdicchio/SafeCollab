@@ -1,13 +1,13 @@
 {% extends "django_messages/base.html" %}
-{% load i18n %}
 {% load widget_tweaks %}
+{% load i18n %}
 {% block body %}
     <div class="container">
         <div class="row">
             <div class="col-lg-5">
-                <h3 class="heading">Send Message</h3>
+                <h3 class="heading">{% trans "Compose Message" %}</h3>
                 <div class="contact-form">
-                    <form role="form" method="post">
+                    <form role="form" method="post" action="">
                         {% csrf_token %}
                         <div class="row">
                             {% for field in form %}
