@@ -1,10 +1,12 @@
 from django.db import models
-
+from django.contrib.auth.models import User, Group, Permission
 # Models for data tables
 # https://docs.djangoproject.com/en/1.9/topics/db/models/
+
 class User(models.Model):
-    username = models.CharField(max_length=128)
-    site_manager = models.BooleanField()
+    class Meta:
+        permissions = (("site_manager", "Site Manager"),
+                       )
 
     def createReport(self, date, sdesc, ldesc, private):
         report = self.create(creator=self, date=date, sdesc=sdesc, ldesc=ldesc, private=private)

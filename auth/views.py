@@ -59,3 +59,6 @@ def register_user(request):
 
     return render(request, 'register.html', {'form': form})
 
+def list_users(request):
+    users = UserProfile.objects.all()
+    return render(request, 'sm.html', {'users': users})

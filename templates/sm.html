@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Site Manager Page{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row text-center">
+            <br><br>
+            <h1>Site Manager Admin Page</h1>
+            <p>{{ "username" }} {{ "site manager" }}</p>
+            {% for user in users %}
+                <p>{{ user.username }} {{ user.site_manager }}</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
