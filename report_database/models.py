@@ -5,7 +5,7 @@ import uuid
 
 # Create your models here.
 class Report(models.Model):
-    creator = models.ForeignKey(UserProfile.User)
+    creator = models.ForeignKey(User, related_name='report_creator')
     report_name = models.CharField(max_length=50, default='Unnamed')
     date = models.DateField()
     sdesc = models.CharField(max_length=60, blank=False, null=False)
