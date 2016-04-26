@@ -21,8 +21,8 @@ class UserProfile(models.Model):
         report = self.create(creator=self, date=date, sdesc=sdesc, ldesc=ldesc, private=private)
         return report
 
-    def __str__(self):              # __unicode__ on Python 2
-        return self.name
+    # def __str__(self):              # __unicode__ on Python 2
+    #     return self.name
 
     user = models.OneToOneField(User, primary_key=True)
     username = models.CharField(max_length=128, default='')
