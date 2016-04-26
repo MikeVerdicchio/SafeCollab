@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Index{% endblock %}
+{% load widget_tweaks %}
+{% block title %}Create Report{% endblock %}
 {% block bar %}
-<body>
+    <body>
     <br><br>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -14,43 +15,31 @@
             </div>
         </div>
     </nav>
-</body>
+    </body>
 {% endblock %}
 {% block body %}
     <div class="container">
-        <div class="row text-center">
-            <h1>Create Report</h1>
-            <h3><strong><font color="green">{{ success }}</font></strong></h3>
-            <h3><strong><font color="red">{{ failure }}</font></strong></h3>
-            <form method="post" enctype="multipart/form-data">
-                <fieldset>
-                    <legend>Report Information<br>
-                    <h5>*fields are required</h5>
-                    </legend>
 
+        <div class="row">
+            <div class="col-lg-5">
+                <h3 class="heading">Create a Report</h3>
+                <h3><strong><font color="green">{{ success }}</font></strong></h3>
+                <h3><strong><font color="red">{{ failure }}</font></strong></h3>
+                <div class="contact-form">
+                    <form role="form" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <!--
-                        <p style ="text-align: left;">Report Name:
-                        <input type="text" name="report_name"><br>
-                        <p style ="text-align: left;">Date:
-                        <input type="date" name="date"><br>
-                        <p style ="text-align: left;">Short Description:
-                        <input type="text" name="sdesc"><br>
-                        <p style ="text-align: left;">Long Description:
-                        <input type="text" name="ldesc"><br>
-                        <p style ="text-align: left;">Private?
-                        <input type="checkbox" name="private" value="male" checked><br>
-                        <p style ="text-align: left;">Upload File:<br>
-                        <input type="file" name="file">
-                        <input type="file" name="file1">
-                        <input type="file" name="file2">
-                        -->
-                        <table>
-                            {{ form.as_table }}
-                        </table>
+                        <div class="row">
+                            {% for field in form %}
+                                <div class="form-group col-lg-12">
+                                    {{ field.label_tag }}
+                                    {{ field | add_class:"form-control" }}
+                                </div>
+                            {% endfor %}
+                        </div>
                         <input type="submit" value="Submit">
-                </fieldset>
-            </form>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
