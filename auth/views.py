@@ -65,6 +65,7 @@ def list_users(request):
     if request.method == "POST":
         num_sm = UserProfile.objects.filter(site_manager=True).count()
         sm = request.POST.getlist('sm')
+        activate = request.POST.getlist('activate')
         if len(sm) + num_sm > 3:
             return render(request, 'sm.html', {
             'users': users,
@@ -73,6 +74,11 @@ def list_users(request):
         for x in sm:
             u_p = UserProfile.objects.get(username=x)
             u_p.site_manager = True
+            u_p.save()
+        for y in activate:
+            u_p = User.objects.get(username=y)
+            status = u_p.is_active
+            u_p.is_active = not status
             u_p.save()
 
     return render(request, 'sm.html', {
