@@ -8,6 +8,8 @@ from .forms import RegisterForm, LoginForm, SMForm
 from Crypto.PublicKey import RSA
 from Crypto import Random
 from django.core.mail import EmailMessage
+from django.contrib.auth.decorators import login_required
+from home.views import index as homepage
 
 
 def login_user(request):
@@ -27,6 +29,7 @@ def login_user(request):
     return render(request, 'login.html', {'form': form})
 
 
+@login_required
 def logout_user(request):
     logout(request)
     return render(request, 'index.html')
@@ -50,23 +53,36 @@ def register_user(request):
             confirm = form.cleaned_data['confirm']
             site_manager = False
             if password == confirm:
-                user = User.objects.create_user(username=username, email=email, password=password, first_name=first, last_name=last)
+                user = User.objects.create_user(username=username, email=email, password=password, first_name=first,
+                                                last_name=last)
                 user.save()
                 key = key_generation()
                 public_key = key.exportKey(passphrase=password, pkcs=8)
                 user = User.objects.get(username=username)
-                user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager, public_key=public_key)
+                user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager,
+                                                          public_key=public_key)
                 user_profile.save()
-                message = 'Hi' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
+                message = 'Hi ' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
                 email = EmailMessage('Welcome to SafeCollab', message, to=[email])
                 email.send()
+
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        return render(request, 'index.html')
+
                 return render(request, 'index.html')
     else:
         form = RegisterForm()
 
     return render(request, 'register.html', {'form': form})
 
+
+@login_required
 def list_users(request):
+    if not request.user.userprofile.site_manager:
+        return homepage(request)
     users = UserProfile.objects.all()
     if request.method == "POST":
         num_sm = UserProfile.objects.filter(site_manager=True).count()
@@ -74,9 +90,9 @@ def list_users(request):
         activate = request.POST.getlist('activate')
         if len(sm) + num_sm > 3:
             return render(request, 'sm.html', {
-            'users': users,
-            'form': SMForm()
-        })
+                'users': users,
+                'form': SMForm()
+            })
         for x in sm:
             u_p = UserProfile.objects.get(username=x)
             u_p.site_manager = True
