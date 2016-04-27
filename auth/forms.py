@@ -16,3 +16,6 @@ class RegisterForm(forms.Form):
 
 class SMForm(forms.Form):
     site_manager = forms.BooleanField(label='Site Manager')
+
+class GroupForm(forms.Form):
+    group_name = forms.CharField(label='Group Name', max_length=120)

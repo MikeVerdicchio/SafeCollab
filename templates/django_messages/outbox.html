@@ -1,13 +1,11 @@
 {% extends "django_messages/base.html" %}
 {% load i18n %}
-{% block title %}Outbox{% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="row text-center">
-            <h1>{% trans "Sent Messages" %}</h1>
+            <h1>{% trans "Outbox" %}</h1>
             {% if message_list %}
-
                 <table class="table table-hover table-striped table-condensed" data-toggle="table" data-search="true"
                        data-show-export="true" data-show-columns="true" data-show-toggle="false" data-sortable="true"
                        data-filer-control="true">
@@ -46,4 +44,5 @@
 
     <link href="https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.css" rel="stylesheet">
     <script src="https://rawgit.com/dabros/bootstrap-table/patch-8/src/bootstrap-table.js"></script>
+
 {% endblock %}

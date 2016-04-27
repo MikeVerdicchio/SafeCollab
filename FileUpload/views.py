@@ -8,10 +8,8 @@ from django.utils.encoding import smart_str
 from django.conf import settings
 import os
 
-#from report_database.models import Report
 from FileUpload.models import Document
 from FileUpload.forms import DocumentForm
-
 
 def list(request):
     if request.method == 'POST':
@@ -54,22 +52,3 @@ def download(request):
   #  response['Content-Length'] = os.stat(file_path).st_size
    # response['Content-Disposition'] = 'attachment; filename=%s/' % smart_str(file_name) 
     #return response
-
-#def getFile(request):
- #   reports = Report.objects.all()
-   # privReports = Report.objects.all().filter(private=True)
-  #  if request.method == 'POST':
-    #    for i in reports[0:]:
-     #       if i.private == False:
-      #          if i.file_1:
-       #             newdoc = Document(docfile = i.file_1)
-        #            newdoc.save()
-         #       if i.file_2:
-          #          newdoc = Document(docfile = i.file_2)
-           #         newdoc.save()
-            #    if i.file_3:
-             #       newdoc = Document(docfile = i.file_3)
-              #      newdoc.save()
-  #  document = Document.objects.all()
-   # return render(request, 'files.html',{'files' : reports, 'documents': document})
-

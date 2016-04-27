@@ -1,0 +1,69 @@
+<html lang="en">
+<{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}Edit Folder{% endblock %}
+{% block bar %}
+<body>
+    <br><br>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/reports/fcreate/">Create Folders</a></li>
+                    <li><a href="/reports/fmanage/">Manage Folders</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</body>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5">
+                <h3 class="heading">Edit Folder</h3>
+                <h3><strong><font color="green">{{ success }}</font></strong></h3>
+                <h3><strong><font color="red">{{ failure }}</font></strong></h3>
+                <div class="contact-form">
+                    <form role="form" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for field in form %}
+                                <div class="form-group col-lg-12">
+                                    {{ field.label_tag }}
+                                    {{ field | add_class:"form-control" }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+<!--
+        <div class="col-lg-5">
+            <h1>Report Edit Page</h1>
+            <h3><strong><font color="green">{{ success }}</font></strong></h3>
+            <h3><strong><font color="red">{{ failure }}</font></strong></h3>
+                <form method="post" enctype="multipart/form-data">
+                    <fieldset>
+                        <legend>Report Information<br>
+                        <h5>*fields are required</h5>
+                        </legend>
+
+                            {% csrf_token %}
+
+                            <table>
+                                {{ form.as_table }}
+                            </table>
+                            <input type="submit" value="Submit">
+                    </fieldset>
+                </form>
+=======
+>>>>>>> b01d9693660604cda7e65049623f08c08ef814c8
+        </div>
+    </div>
+    -->
+{% endblock %}
+        </div>
+</html>

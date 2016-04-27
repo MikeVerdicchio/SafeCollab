@@ -11,21 +11,20 @@
             <h1>Create Group</h1>
             <form method="post">
                     {% csrf_token %}
+                <td><input type="text" name="group" placeholder="Enter Group Name"  ></td>
+
             <table class="Create Group" border="1" style="width:100%">
                 <thead>
                     <tr>
                         <td><strong>Users</strong></td>
+                        <td><strong>Add to Group</strong></td>
                     </tr>
                 </thead>
                 <tbody>
-                {% for User in all_users %}
+                {% for User in users %}
                     <tr>
                         <td>{{ User.username }}</td>
-                        {% if User in users %}
-                            <td>In Group</td>
-                        {% else %}
-                            <td>Not In Group</td>
-                        {% endif %}
+                        <td><input type="checkbox" name="add" value={{ User.username }}  ></td>
                     </tr>
                 {% endfor %}
                 </tbody>
