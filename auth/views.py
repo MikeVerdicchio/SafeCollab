@@ -9,6 +9,7 @@ from Crypto.PublicKey import RSA
 from Crypto import Random
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
+from home.views import index as homepage
 
 
 def login_user(request):
@@ -80,6 +81,8 @@ def register_user(request):
 
 @login_required
 def list_users(request):
+    if not request.user.userprofile.site_manager:
+        return homepage(request)
     users = UserProfile.objects.all()
     if request.method == "POST":
         num_sm = UserProfile.objects.filter(site_manager=True).count()
