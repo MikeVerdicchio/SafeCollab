@@ -14,18 +14,21 @@
             <table class="Group Info" border="1" style="width:100%">
                 <thead>
                     <tr>
-                        <td><strong>Group Info</strong></td>
+                        <td><strong>Users</strong></td>
+                        <td><strong>Remove From Group</strong></td>
                     </tr>
                 </thead>
                 <tbody>
                 {% for User in users %}
                     <tr>
                         <td>{{ User.username }}</td>
+                        <td><input type="checkbox" name="remove" value={{ User.username }}  ></td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
             <br>
+                <input type="submit" value="Submit Request">
             </form>
             <br>
         </div>

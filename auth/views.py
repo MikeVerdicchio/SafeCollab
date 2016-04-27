@@ -102,6 +102,11 @@ def manage_group(request):
 
 def show_group(request, name):
     group = Group.objects.get(name=name)
+    if request.method == "POST":
+        remove = request.POST.getlist('remove')
+        for x in remove:
+            user = User.objects.get(username=x)
+            group.user_set.remove(user)
     users = group.user_set.all()
     return render(request, 'group_info.html', {
         'users': users,
