@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from auth.models import UserProfile
-from .forms import RegisterForm, LoginForm, SMForm
+from .forms import RegisterForm, LoginForm, SMForm, GroupForm
 from Crypto.PublicKey import RSA
 from Crypto import Random
 from django.core.mail import EmailMessage
@@ -90,4 +90,21 @@ def list_users(request):
     return render(request, 'sm.html', {
         'users': users,
         'form': SMForm()
+    })
+
+def create_group(request):
+    if not request.user.userprofile.site_manager:
+        return homepage(request)
+    users = User.objects.all()
+    if request.method == "POST":
+        name = request.POST.get('group')
+        newgroup = Group.objects.create(name=name)
+        add = request.POST.getlist('add')
+        print(add)
+        for x in add:
+            user = User.objects.get(username=x)
+            newgroup.user_set.add(user)
+    return render(request, 'create_group.html', {
+        'users': users,
+        'form': GroupForm()
     })
