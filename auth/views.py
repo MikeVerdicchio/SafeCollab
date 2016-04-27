@@ -8,7 +8,7 @@ from .forms import RegisterForm, LoginForm, SMForm
 from Crypto.PublicKey import RSA
 from Crypto import Random
 from django.core.mail import EmailMessage
-
+from home.views import index as homepage
 
 def login_user(request):
     if request.method == 'POST':
@@ -60,6 +60,12 @@ def register_user(request):
                 message = 'Hi' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
                 email = EmailMessage('Welcome to SafeCollab', message, to=[email])
                 email.send()
+                user = authenticate(username=username, password=password)
+                    if user is not None:
+                        if user.is_active:
+                            login(request, user)
+                            return render(request, 'index.html')
+
                 return render(request, 'index.html')
     else:
         form = RegisterForm()
