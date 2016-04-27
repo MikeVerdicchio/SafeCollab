@@ -35,7 +35,7 @@ def login():
 def reports():
     report = Report.objects.all()
     for i in report[0:]:
-
+    
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SafeCollab.settings")

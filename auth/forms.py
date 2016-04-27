@@ -14,4 +14,5 @@ class RegisterForm(forms.Form):
     password = forms.CharField(label='Password', widget=forms.PasswordInput())
     confirm = forms.CharField(label='Confirm Password', widget=forms.PasswordInput())
 
-
+class SMForm(forms.Form):
+    site_manager = forms.BooleanField(label='Site Manager')

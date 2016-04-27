@@ -43,6 +43,14 @@ class MessageManager(models.Manager):
             sender_deleted_at__isnull=False,
         )
 
+    def num_messages(self):
+        """
+        Returns the number of unread messages
+        """
+        return self.filter(
+            recipient=user,
+            new=True,
+        ).count()
 
 @python_2_unicode_compatible
 class Message(models.Model):
@@ -59,7 +67,10 @@ class Message(models.Model):
     replied_at = models.DateTimeField(_("replied at"), null=True, blank=True)
     sender_deleted_at = models.DateTimeField(_("Sender deleted at"), null=True, blank=True)
     recipient_deleted_at = models.DateTimeField(_("Recipient deleted at"), null=True, blank=True)
-    encrypt = models.BooleanField(_("Encrypt"), default=False)
+    encrypt = models.BooleanField(_("Encrypt"), null=False, blank=False, default=False)
+    encrypt_pw = models.CharField(_("Encrypt PW"), default='', max_length=120)
+    decrypt_pw = models.CharField(_("Decrypt PW"), default='', max_length=120)
+
 
 
     objects = MessageManager()

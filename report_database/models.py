@@ -1,11 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
+<<<<<<< HEAD
 from FileUpload.models import Document
+=======
+from auth.models import UserProfile
+>>>>>>> b01d9693660604cda7e65049623f08c08ef814c8
 import uuid
 
 # Create your models here.
 class Report(models.Model):
-    creator = models.ForeignKey(User)
+    creator = models.ForeignKey(User, related_name='report_creator')
     report_name = models.CharField(max_length=50, default='Unnamed')
     date = models.DateField()
     sdesc = models.CharField(max_length=60, blank=False, null=False)
