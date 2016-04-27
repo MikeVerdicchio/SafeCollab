@@ -83,6 +83,7 @@ def create(request):
         } )
     else:
         return render(request, 'report_create.html')
+
 def manage(request):
     report_data = Report.objects.all()
     if request.method == "POST":
