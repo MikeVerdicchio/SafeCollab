@@ -1,18 +1,20 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block bar %}
-    <br><br>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/messages/inbox">&raquo;&nbsp;{% trans "Inbox" %}</a></li>
-                    <li><a href="/messages/outbox">&raquo;&nbsp;{% trans "Sent Messages" %}</a></li>
-                    <li><a href="/messages/compose">&raquo;&nbsp;{% trans "New Message" %}</a></li>
-                    <li><a href="/messages/trash">&raquo;&nbsp;{% trans "Trash" %}</a></li>
-                </ul>
+    <div class="container">
+        <br><br>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/messages/compose">&raquo;&nbsp;{% trans "New Message" %}</a></li>
+                        <li><a href="/messages/inbox">&raquo;&nbsp;{% trans "Inbox" %}</a></li>
+                        <li><a href="/messages/outbox">&raquo;&nbsp;{% trans "Sent Messages" %}</a></li>
+                        <li><a href="/messages/trash">&raquo;&nbsp;{% trans "Trash" %}</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
 {% endblock %}
 {% block body %}{% endblock %}

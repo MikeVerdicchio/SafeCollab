@@ -15,9 +15,7 @@ from django_messages.forms import ComposeForm
 from django_messages.utils import format_quote, get_user_model, get_username_field
 from Crypto.PublicKey import RSA
 
-
 from auth.models import UserProfile
-
 
 User = get_user_model()
 
@@ -25,6 +23,7 @@ if "notification" in settings.INSTALLED_APPS and getattr(settings, 'DJANGO_MESSA
     from notification import models as notification
 else:
     notification = None
+
 
 @never_cache
 @login_required
@@ -39,6 +38,7 @@ def inbox(request, template_name='django_messages/inbox.html'):
         'message_list': message_list,
     }, context_instance=RequestContext(request))
 
+
 @never_cache
 @login_required
 def outbox(request, template_name='django_messages/outbox.html'):
@@ -51,6 +51,7 @@ def outbox(request, template_name='django_messages/outbox.html'):
     return render_to_response(template_name, {
         'message_list': message_list,
     }, context_instance=RequestContext(request))
+
 
 @never_cache
 @login_required
@@ -67,9 +68,10 @@ def trash(request, template_name='django_messages/trash.html'):
         'message_list': message_list,
     }, context_instance=RequestContext(request))
 
+
 @login_required
 def compose(request, recipient=None, form_class=ComposeForm,
-        template_name='django_messages/compose.html', success_url=None, recipient_filter=None):
+            template_name='django_messages/compose.html', success_url=None, recipient_filter=None):
     """
     Displays and handles the ``form_class`` form to compose new messages.
     Required Arguments: None
@@ -95,18 +97,20 @@ def compose(request, recipient=None, form_class=ComposeForm,
     else:
         form = form_class()
         if recipient is not None:
-            recipients = [u for u in User.objects.filter(**{'%s__in' % get_username_field(): [r.strip() for r in recipient.split('+')]})]
+            recipients = [u for u in User.objects.filter(
+                **{'%s__in' % get_username_field(): [r.strip() for r in recipient.split('+')]})]
             form.fields['recipient'].initial = recipients
     return render_to_response(template_name, {
         'form': form,
         'recipient': recipient
     }, context_instance=RequestContext(request))
 
+
 @login_required
 def reply(request, message_id, form_class=ComposeForm,
-        template_name='django_messages/compose.html', success_url=None,
-        recipient_filter=None, quote_helper=format_quote,
-        subject_template=_(u"Re: %(subject)s"),):
+          template_name='django_messages/compose.html', success_url=None,
+          recipient_filter=None, quote_helper=format_quote,
+          subject_template=_(u"Re: %(subject)s"), ):
     """
     Prepares the ``form_class`` form for writing a reply to a given message
     (specified via ``message_id``). Uses the ``format_quote`` helper from
@@ -132,12 +136,13 @@ def reply(request, message_id, form_class=ComposeForm,
         form = form_class(initial={
             'body': quote_helper(parent.sender, parent.body),
             'subject': subject_template % {'subject': parent.subject},
-            'recipient': [parent.sender,]
-            })
+            'recipient': [parent.sender, ]
+        })
     return render_to_response(template_name, {
         'form': form,
         'recipient': parent.sender,
     }, context_instance=RequestContext(request))
+
 
 @login_required
 def delete(request, message_id, success_url=None):
@@ -174,6 +179,7 @@ def delete(request, message_id, success_url=None):
         return HttpResponseRedirect(success_url)
     raise Http404
 
+
 @login_required
 def undelete(request, message_id, success_url=None):
     """
@@ -201,11 +207,12 @@ def undelete(request, message_id, success_url=None):
         return HttpResponseRedirect(success_url)
     raise Http404
 
+
 @never_cache
 @login_required
 def view(request, message_id, form_class=ComposeForm, quote_helper=format_quote,
-        subject_template=_(u"Re: %(subject)s"),
-        template_name='django_messages/view.html'):
+         subject_template=_(u"Re: %(subject)s"),
+         template_name='django_messages/view.html'):
     """
     Shows a single message.``message_id`` argument is required.
     The user is only allowed to see the message, if he is either
@@ -252,7 +259,7 @@ def view(request, message_id, form_class=ComposeForm, quote_helper=format_quote,
             'subject': subject_template % {'subject': message.subject},
             'recipient': [message.sender, ],
             'encrypted': [message.encrypt, ],
-            })
+        })
         context['reply_form'] = form
     return render_to_response(template_name, context,
-        context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))
