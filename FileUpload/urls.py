@@ -21,7 +21,6 @@ from django.contrib import admin
 urlpatterns = patterns('FileUpload.views',
     url(r'^list/$', 'list', name='list'),
     url(r'^download/$', 'download', name='download'),
-    #url(r'^getFile/$', 'getFile', name='getFile'),
 )
 
 if settings.DEBUG:

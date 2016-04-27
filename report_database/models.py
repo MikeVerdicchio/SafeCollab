@@ -1,10 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-<<<<<<< HEAD
-from FileUpload.models import Document
-=======
 from auth.models import UserProfile
->>>>>>> b01d9693660604cda7e65049623f08c08ef814c8
 import uuid
 
 # Create your models here.
@@ -17,15 +13,12 @@ class Report(models.Model):
     private = models.BooleanField(default=False)
     f1n = models.CharField(max_length=50, blank=True, null=True)
     file_1 = models.FileField(upload_to='documents', blank=True, null=True)
-    #file_1 = models.ForeignKey(Document, related_name='file1')
     encrypt_1 = models.BooleanField(default=False)
     f2n = models.CharField(max_length=50, blank=True, null=True)
     file_2 = models.FileField(upload_to='documents', blank=True, null=True)
-    #file_2 = models.ForeignKey(Document, related_name='file2')
     encrypt_2 = models.BooleanField(default=False)
     f3n = models.CharField(max_length=50, blank=True, null=True)
     file_3 = models.FileField(upload_to='documents', blank=True, null=True)
-    #file_3 = models.ForeignKey(Document, related_name='file3')
     encrypt_3 = models.BooleanField(default=False)
     delete_report = models.BooleanField(default=False)
     uniqueid = models.CharField(default=uuid.uuid4, unique=True, max_length=100, null=True, blank=True)
