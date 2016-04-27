@@ -29,6 +29,9 @@ class UserProfile(models.Model):
     site_manager = models.BooleanField(default=False)
     public_key = models.CharField(max_length=1000, default='')
 
+    def is_site_manager(self):
+        return self.user.site_manager
+
     # def username(self):
     #     return self.user.username
     #
