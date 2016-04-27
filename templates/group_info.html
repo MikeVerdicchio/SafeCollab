@@ -15,13 +15,19 @@
                 <thead>
                     <tr>
                         <td><strong>Users</strong></td>
-                        <td><strong>Remove From Group</strong></td>
+                        <td><strong>Group Status</strong></td>
+                        <td><strong>Add/Remove User</strong></td>
                     </tr>
                 </thead>
                 <tbody>
-                {% for User in users %}
+                {% for User in all_users %}
                     <tr>
                         <td>{{ User.username }}</td>
+                        {% if User in users %}
+                            <td>In Group</td>
+                        {% else %}
+                            <td>Not In Group</td>
+                        {% endif %}
                         <td><input type="checkbox" name="remove" value={{ User.username }}  ></td>
                     </tr>
                 {% endfor %}

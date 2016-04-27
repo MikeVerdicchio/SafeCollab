@@ -106,8 +106,14 @@ def show_group(request, name):
         remove = request.POST.getlist('remove')
         for x in remove:
             user = User.objects.get(username=x)
-            group.user_set.remove(user)
+            if user.groups.filter(name=name).exists():
+                group.user_set.remove(user)
+            else:
+                print(True)
+                group.user_set.add(user)
     users = group.user_set.all()
+    all_users = User.objects.all()
     return render(request, 'group_info.html', {
         'users': users,
+        'all_users': all_users,
     })
