@@ -1,29 +1,22 @@
 {% extends "django_messages/base.html" %}
 {% load i18n %}
-{% block title %}Trash{% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="row text-center">
+            <br><br>
             <h1>{% trans "Deleted Messages" %}</h1>
             {% if message_list %}
-
-                <table class="table table-hover table-striped table-condensed" data-toggle="table" data-search="true"
-                       data-show-export="true" data-show-columns="true" data-show-toggle="false" data-sortable="true"
-                       data-filer-control="true">
-                    <thead class="thead-default">
+                <table class="messages">
+                    <thead>
                     <tr>
-                        <th class="text-center" data-field="col0" data-sortable="true" data-searchable="true"
-                            data-switchable="false">{% trans "Sender" %}</th>
-                        <th class="text-center" data-field="col1" data-sortable="true" data-searchable="true"
-                            data-switchable="false">{% trans "Subject" %}</th>
-                        <th class="text-center" data-field="col2" data-sortable="true" data-searchable="true"
-                            data-switchable="false">{% trans "Date" %}</th>
-                        <th class="text-center" data-field="col3" data-sortable="true" data-searchable="true"
-                            data-switchable="false">{% trans "Action" %}</th>
+                        <th>{% trans "Sender" %}</th>
+                        <th>{% trans "Subject" %}</th>
+                        <th>{% trans "Date" %}</th>
+                        <th>{% trans "Action" %}</th>
                     </tr>
                     </thead>
-                    <tbody class="text-center">
+                    <tbody>
                     {% for message in message_list %}
                         <tr>
                             <td>{{ message.sender }}</td>
@@ -31,8 +24,7 @@
                                 {{ message.subject }}
                             </td>
                             <td>{{ message.sent_at|date:_("DATETIME_FORMAT") }}</td>
-                            <td><a href="{% url 'messages:messages_undelete' message.id %}">{% trans "undelete" %}</a>
-                            </td>
+                        <td><a href="{% url 'messages:messages_undelete' message.id %}">{% trans "undelete" %}</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -42,10 +34,6 @@
             {% endif %}
             <br/>
             <p>{% trans "Deleted Messages are removed from the trash at unregular intervals, don't rely on this feature for long-time storage." %}</p>
-
         </div>
     </div>
-
-    <link href="https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.css" rel="stylesheet">
-    <script src="https://rawgit.com/dabros/bootstrap-table/patch-8/src/bootstrap-table.js"></script>
 {% endblock %}
