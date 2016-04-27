@@ -53,29 +53,32 @@ def create(request):
                 rep.save()
                 success = "Report has been saved!"
                 return render( request, 'report_create.html', {
-                'form': ReportForm(),
+                'form': form,
                 'success': success
                 })
             else:
                 failure = "Please use a unique report name"
                 return render( request, 'report_create.html', {
-                    'form': ReportForm(),
+                    'form': form,
                     'failure': failure
                 })
         else:
             failure = "Submission Failed"
             return render( request, 'report_create.html', {
-                'form': ReportForm(),
+                'form': form,
                 'failure': failure
             })
         page_data = { 'form': ReportForm() }
         return render( request, 'report_create.html', {
-            'form': ReportForm(),
+            'form': form,
         } )
     else:
         return render(request, 'report_create.html')
 def manage(request):
+    current_user = request.user
     report_data = Report.objects.all()
+    #if(current_user.site_manager == False):
+    report_data = Report.objects.filter(creator_id=current_user)
     if request.method == "POST":
         for x in report_data[0:]:
             if request.POST.get(x.uniqueid)!= None:
@@ -104,6 +107,11 @@ def reportedit(request, report_pk):
             encrypt1 = form.cleaned_data["encrypt_1"]
             encrypt2 = form.cleaned_data["encrypt_2"]
             encrypt3 = form.cleaned_data["encrypt_3"]
+            #r.f1n = encrypt1.name
+            # if(encrypt2 != None):
+            #     r.f2n = encrypt2.name
+            # if(encrypt3 != None):
+            #     r.f3n = encrypt3.name
             r.report_name = report_name
             r.date = date
             r.sdesc = sdesc
@@ -115,7 +123,6 @@ def reportedit(request, report_pk):
             r.encrypt_1 = encrypt1
             r.encrypt_2 = encrypt2
             r.encrypt_3 = encrypt3
-            print(r.report_name)
             r.save()
             success = "Report has been updated!"
             return render(request, 'report_edit.html', {
