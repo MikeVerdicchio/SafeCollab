@@ -43,6 +43,14 @@ class MessageManager(models.Manager):
             sender_deleted_at__isnull=False,
         )
 
+    def num_messages(self):
+        """
+        Returns the number of unread messages
+        """
+        return self.filter(
+            recipient=user,
+            new=True,
+        ).count()
 
 @python_2_unicode_compatible
 class Message(models.Model):
