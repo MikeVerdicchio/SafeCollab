@@ -117,3 +117,7 @@ def show_group(request, name):
         'users': users,
         'all_users': all_users,
     })
+
+def create_group(request):
+
+    return render(request, 'create_group.html')
