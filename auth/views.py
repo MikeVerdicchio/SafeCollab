@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response, render
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from auth.models import UserProfile
 from .forms import RegisterForm, LoginForm, SMForm
 from Crypto.PublicKey import RSA
@@ -90,4 +90,19 @@ def list_users(request):
     return render(request, 'sm.html', {
         'users': users,
         'form': SMForm()
+    })
+
+def manage_group(request):
+    groups = Group.objects.all()
+    users = User.objects.all()
+    return render(request, 'group.html', {
+        'groups': groups,
+        'users': users,
+    })
+
+def show_group(request, name):
+    group = Group.objects.get(name=name)
+    users = group.user_set.all()
+    return render(request, 'group_info.html', {
+        'users': users,
     })
