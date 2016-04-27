@@ -61,12 +61,10 @@ def register_user(request):
                 email = EmailMessage('Welcome to SafeCollab', message, to=[email])
                 email.send()
                 user = authenticate(username=username, password=password)
-                    if user is not None:
-                        if user.is_active:
-                            login(request, user)
-                            return render(request, 'index.html')
-
-                return render(request, 'index.html')
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        return homepage(request)
     else:
         form = RegisterForm()
 
