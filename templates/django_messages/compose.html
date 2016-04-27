@@ -1,17 +1,28 @@
 {% extends "django_messages/base.html" %}
+{% load widget_tweaks %}
 {% load i18n %}
+{% block title %}New Message{% endblock %}
+
 {% block body %}
     <div class="container">
-        <div class="row text-center">
-            <br><br>
-            <h1>{% trans "Compose Message" %}</h1>
-            <form action="" method="post">
-                {% csrf_token %}
-                <table>
-                    {{ form.as_table }}
-                </table>
-                <input type="submit" value="{% trans "Send" %} &raquo;"/>
-            </form>
+        <div class="row">
+            <div class="col-lg-5">
+                <h3 class="heading">{% trans "Compose Message" %}</h3>
+                <div class="contact-form">
+                    <form role="form" method="post" action="">
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for field in form %}
+                                <div class="form-group col-lg-12">
+                                    {{ field.label_tag }}
+                                    {{ field | add_class:"form-control" }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <input type="submit" value="{% trans "Send" %} &raquo;"/>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

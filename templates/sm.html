@@ -1,27 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Index{% endblock %}
+{% block title %}Site Manager Panel{% endblock %}
 {% block table %}
-<body>
 
-<table style="width:100%">
-  <tr>
-    <td>Jill</td>
-    <td>Smith</td>
-    <td>50</td>
-  </tr>
-  <tr>
-    <td>Eve</td>
-    <td>Jackson</td>
-    <td>94</td>
-  </tr>
-  <tr>
-    <td>John</td>
-    <td>Doe</td>
-    <td>80</td>
-  </tr>
-</table>
-
-</body>
 {% endblock %}
 {% block body %}
     <div class="container">
@@ -29,9 +9,9 @@
             <br><br>
             <h1>Site Manager Admin</h1>
             <form method="post">
-                    {% csrf_token %}
-            <table class="Site Manager Admin" border="1" style="width:100%">
-                <thead>
+                {% csrf_token %}
+                <table class="Site Manager Admin" border="1" style="width:100%">
+                    <thead>
                     <tr>
                         <td><strong>User Name</strong></td>
                         <td><strong>Site Manager Status</strong></td>

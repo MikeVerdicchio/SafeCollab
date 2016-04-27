@@ -13,8 +13,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Document',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('docfile', models.FileField(upload_to='documents/%Y/%m/%d')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('docfile', models.FileField(null=True, upload_to='documents', blank=True)),
             ],
         ),
     ]

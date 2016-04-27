@@ -1,26 +1,10 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
-{% block title %}Create Report{% endblock %}
-{% block bar %}
-    <body>
-    <br><br>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/reports/">Report Home</a></li>
-                    <li><a href="/reports/create/">Create Reports</a></li>
-                    <li><a href="/reports/manage/">Manage Reports</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    </body>
-{% endblock %}
+{% block title %}New Report{% endblock %}
 {% block body %}
     <div class="container">
-
         <div class="row">
+            <br><br>
             <div class="col-lg-5">
                 <h3 class="heading">Create a Report</h3>
                 <h3><strong><font color="green">{{ success }}</font></strong></h3>
@@ -41,6 +25,7 @@
                 </div>
             </div>
         </div>
+        <br><br>
     </div>
 {% endblock %}
 
