@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block table %}
+<body>
+</body>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row text-center">
+            <br><br>
+            <h1>Create Group</h1>
+            <form method="post">
+                    {% csrf_token %}
+                <td><input type="text" name="group" placeholder="Enter Group Name"  ></td>
+
+            <table class="Create Group" border="1" style="width:100%">
+                <thead>
+                    <tr>
+                        <td><strong>Users</strong></td>
+                        <td><strong>Add to Group</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for User in users %}
+                    <tr>
+                        <td>{{ User.username }}</td>
+                        <td><input type="checkbox" name="add" value={{ User.username }}  ></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <br>
+                <input type="submit" value="Submit Request">
+            </form>
+            <br>
+        </div>
+    </div>
+{% endblock %}
+
+
