@@ -1,4 +1,14 @@
+from django import template
 from django.template import Library, Node, TemplateSyntaxError
+from django_messages.models import Message
+
+register = template.Library()
+
+
+@register.filter
+def get_unread(user):
+    return Message.objects.num_messages(user)
+
 
 class InboxOutput(Node):
     def __init__(self, varname=None):
@@ -15,6 +25,7 @@ class InboxOutput(Node):
             return ""
         else:
             return "%s" % (count)
+
 
 def do_print_inbox_count(parser, token):
     """
@@ -40,6 +51,7 @@ def do_print_inbox_count(parser, token):
         return InboxOutput(bits[2])
     else:
         return InboxOutput()
+
 
 register = Library()
 register.tag('inbox_count', do_print_inbox_count)
