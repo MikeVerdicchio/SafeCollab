@@ -16,6 +16,11 @@ class ReportForm(forms.Form):
     file_3 = forms.FileField(label='File 3', required=False)
     encrypt_3 = forms.BooleanField(label='Encrypt File 3', required=False)
 
+class FolderForm(forms.Form):
+    folder_name = forms.CharField(label='Folder Name*', max_length=50)
+    shared_user_field = forms.CharField(label='Users Given Access (Seperate by Commas)', max_length=1000, required=False)
+    private = forms.BooleanField(label='Private', required=False)
+
 class EditReportForm(forms.Form):
     report_name = forms.CharField(label='Report Name*', max_length=50)
     date = forms.DateField(label="Date*", widget=SelectDateWidget(years=[str(k) for k in range(2000, 2051)]))
