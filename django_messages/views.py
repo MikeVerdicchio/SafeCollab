@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.core.urlresolvers import reverse
@@ -12,6 +13,11 @@ from django.views.decorators.cache import never_cache
 from django_messages.models import Message
 from django_messages.forms import ComposeForm
 from django_messages.utils import format_quote, get_user_model, get_username_field
+from Crypto.PublicKey import RSA
+
+
+from auth.models import UserProfile
+
 
 User = get_user_model()
 
@@ -219,12 +225,33 @@ def view(request, message_id, form_class=ComposeForm, quote_helper=format_quote,
         message.read_at = now
         message.save()
 
-    context = {'message': message, 'reply_form': None}
+    context = {'message': message, 'reply_form': None, 'decrypt_pw': None}
+    message.decrypt_pw = request.GET.get('dpw')
+    user = authenticate(username=message.sender, password=message.decrypt_pw)
+    body = quote_helper(message.sender, message.body)
+    if user is not None:
+        key = UserProfile.objects.get(username__exact=message.sender).public_key
+        try:
+            importkey = RSA.importKey(key, passphrase=message.decrypt_pw)
+        except ValueError:
+            print("Incorrect password")
+
+        body = str(message.body[3:])
+        body = body[:-3]
+        body = body.encode('utf-8')
+        body = importkey.decrypt(body)
+
+        body = body.decode('utf-8', "ignore")
+        message.body = body
+        message.body = str(key)
+
+        context['message'] = message
     if message.recipient == user:
         form = form_class(initial={
-            'body': quote_helper(message.sender, message.body),
+            'body': body,
             'subject': subject_template % {'subject': message.subject},
-            'recipient': [message.sender,]
+            'recipient': [message.sender, ],
+            'encrypted': [message.encrypt, ],
             })
         context['reply_form'] = form
     return render_to_response(template_name, context,
