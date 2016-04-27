@@ -91,7 +91,6 @@ def manage(request):
                 x.delete()
     return render(request, 'report_manage.html', {
                 'report_all': report_data,
-                'form': deleteReportForm()
             })
 
 def reportedit(request, report_pk):
