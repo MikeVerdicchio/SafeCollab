@@ -22,7 +22,20 @@ class Report(models.Model):
     encrypt_3 = models.BooleanField(default=False)
     delete_report = models.BooleanField(default=False)
     uniqueid = models.CharField(default=uuid.uuid4, unique=True, max_length=100, null=True, blank=True)
+    folderid = models.CharField(max_length=100, null=True, blank=True)
 
 
     def __str__(self):
         return self.report_name
+
+
+
+class Folder(models.Model):
+    creator = models.ForeignKey(User, related_name='folder_creator')
+    folder_name = models.CharField(max_length=50, default='Unnamed')
+    shared_users = models.ManyToManyField(User)
+    uniqueid = models.CharField(default=uuid.uuid4, unique=True, max_length=100, null=True, blank=True)
+    private = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.folder_name

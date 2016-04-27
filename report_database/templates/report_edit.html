@@ -2,6 +2,22 @@
 <{% extends "base.html" %}
 {% load widget_tweaks %}
 {% block title %}Edit Report{% endblock %}
+{% block bar %}
+<body>
+    <br><br>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/reports/">Report Home</a></li>
+                    <li><a href="/reports/create/">Create Reports</a></li>
+                    <li><a href="/reports/manage/">Manage Reports</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</body>
+{% endblock %}
 {% block body %}
     <div class="container">
         <div class="row">
@@ -50,4 +66,5 @@
     </div>
     -->
 {% endblock %}
+        </div>
 </html>
