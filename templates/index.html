@@ -2,15 +2,28 @@
 {% block title %}SafeCollab{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row text-center">
-            <br><br>
-            <h1>Welcome to SafeCollab!</h1>
-            {% if user.is_authenticated %}
-                <p>Hello {{ user.first_name }} {{ user.last_name }}. How are you today?</p>
-            {% else %}
-                <p>Please <a href="/login/">log in</a> or <a href="/register/">register</a> before you can view reports!</p>
-            {% endif %}
+    <link rel="stylesheet" href="http://www.mikeverdicchio.me/Resources/cs3240.css"/>
+    <div id="wrapper">
+        <div id="bg"></div>
+        <div id="overlay"></div>
+        <div id="main">
+
+            <header id="header">
+                <h1>SafeCollab</h1>
+                <p>Online collaboration &nbsp;&bull;&nbsp; File sharing &nbsp;&bull;&nbsp; Messaging</p>
+            </header>
         </div>
     </div>
+
+    <script>
+        window.onload = function () {
+            document.body.className = '';
+        }
+        window.ontouchmove = function () {
+            return false;
+        }
+        window.onorientationchange = function () {
+            document.body.scrollTop = 0;
+        }
+    </script>
 {% endblock %}
