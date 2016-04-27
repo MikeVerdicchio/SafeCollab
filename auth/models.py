@@ -44,17 +44,17 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return self.user.username
 
-class Group(models.Model):
-    GROUP_CHOICES = (
-        ('G1', 'Group 1'),
-        ('G2', 'Group 2'),
-        ('G3', 'Group 3'),
-    )
-    group = models.CharField(max_length=3, choices=GROUP_CHOICES)
-    members = models.ManyToManyField(User, through='Membership')
-
-    def __str__(self):              # __unicode__ on Python 2
-        return self.name
+# class Group(models.Model):
+#     GROUP_CHOICES = (
+#         ('G1', 'Group 1'),
+#         ('G2', 'Group 2'),
+#         ('G3', 'Group 3'),
+#     )
+#     group = models.CharField(max_length=3, choices=GROUP_CHOICES)
+#     members = models.ManyToManyField(User, through='Membership')
+#
+#     def __str__(self):              # __unicode__ on Python 2
+#         return self.name
 
 class Membership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
