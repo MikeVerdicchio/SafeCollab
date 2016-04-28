@@ -2,12 +2,14 @@ from django.shortcuts import render_to_response, render
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from auth.models import UserProfile
 from .forms import RegisterForm, LoginForm, SMForm, GroupForm
 from Crypto.PublicKey import RSA
 from Crypto import Random
 from django.core.mail import EmailMessage
+from home.views import index as homepage
+from django.contrib.auth.decorators import login_required
 
 
 def login_user(request):
@@ -50,23 +52,33 @@ def register_user(request):
             confirm = form.cleaned_data['confirm']
             site_manager = False
             if password == confirm:
-                user = User.objects.create_user(username=username, email=email, password=password, first_name=first, last_name=last)
+                user = User.objects.create_user(username=username, email=email, password=password, first_name=first,
+                                                last_name=last)
                 user.save()
                 key = key_generation()
                 public_key = key.exportKey(passphrase=password, pkcs=8)
                 user = User.objects.get(username=username)
-                user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager, public_key=public_key)
+                user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager,
+                                                          public_key=public_key)
                 user_profile.save()
                 message = 'Hi' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
                 email = EmailMessage('Welcome to SafeCollab', message, to=[email])
                 email.send()
-                return render(request, 'index.html')
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        return homepage(request)
     else:
         form = RegisterForm()
 
     return render(request, 'register.html', {'form': form})
 
+
+@login_required
 def list_users(request):
+    if not request.user.userprofile.site_manager:
+        return homepage(request)
     users = UserProfile.objects.all()
     if request.method == "POST":
         num_sm = UserProfile.objects.filter(site_manager=True).count()
@@ -74,9 +86,9 @@ def list_users(request):
         activate = request.POST.getlist('activate')
         if len(sm) + num_sm > 3:
             return render(request, 'sm.html', {
-            'users': users,
-            'form': SMForm()
-        })
+                'users': users,
+                'form': SMForm()
+            })
         for x in sm:
             u_p = UserProfile.objects.get(username=x)
             u_p.site_manager = True
@@ -94,6 +106,10 @@ def list_users(request):
 
 def manage_group(request):
     groups = Group.objects.all()
+    if request.user.userprofile.site_manager:
+        groups = Group.objects.all()
+    else:
+        groups = request.user.groups.all()
     users = User.objects.all()
     return render(request, 'group.html', {
         'groups': groups,
@@ -111,27 +127,27 @@ def show_group(request, name):
             else:
                 group.user_set.add(user)
     users = group.user_set.all()
-    all_users = User.objects.all()
+    if request.user.userprofile.site_manager:
+        all_users = User.objects.all()
+    else:
+        all_users = User.objects.all()
+        for user in users:
+            all_users = all_users.exclude(username=user.username)
     return render(request, 'group_info.html', {
         'users': users,
         'all_users': all_users,
     })
 
 def create_group(request):
-    if not request.user.userprofile.site_manager:
-        return homepage(request)
     users = User.objects.all()
     if request.method == "POST":
         name = request.POST.get('group')
         newgroup = Group.objects.create(name=name)
         add = request.POST.getlist('add')
-        print(add)
         for x in add:
             user = User.objects.get(username=x)
             newgroup.user_set.add(user)
-
     return render(request, 'create_group.html', {
         'users': users,
         'form': GroupForm()
     })
-
