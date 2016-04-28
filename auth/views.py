@@ -105,7 +105,10 @@ def list_users(request):
     })
 
 def manage_group(request):
-    groups = Group.objects.all()
+    if request.user.userprofile.site_manager:
+        groups = Group.objects.all()
+    else:
+        groups = request.user.groups.all()
     users = User.objects.all()
     return render(request, 'group.html', {
         'groups': groups,
@@ -121,24 +124,25 @@ def show_group(request, name):
             if user.groups.filter(name=name).exists():
                 group.user_set.remove(user)
             else:
-                print(True)
                 group.user_set.add(user)
     users = group.user_set.all()
-    all_users = User.objects.all()
+    if request.user.userprofile.site_manager:
+        all_users = User.objects.all()
+    else:
+        all_users = User.objects.all()
+        for user in users:
+            all_users = all_users.exclude(username=user.username)
     return render(request, 'group_info.html', {
         'users': users,
         'all_users': all_users,
     })
 
 def create_group(request):
-    if not request.user.userprofile.site_manager:
-        return homepage(request)
     users = User.objects.all()
     if request.method == "POST":
         name = request.POST.get('group')
         newgroup = Group.objects.create(name=name)
         add = request.POST.getlist('add')
-        print(add)
         for x in add:
             user = User.objects.get(username=x)
             newgroup.user_set.add(user)

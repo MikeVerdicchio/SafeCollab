@@ -56,6 +56,13 @@
                             <li><a href="/messages/inbox"><span class="glyphicon glyphicon-envelope"
                                                                 aria-hidden="true"></span>&nbsp View Messages</a></li>
                             <li role="separator" class="divider"></li>
+                            {% if user.userprofile.site_manager %}
+                                <li><a href="/sm"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbsp
+                                    Site Manager Panel</a></li>
+                            {% endif %}
+                                <li><a href="/groups"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbsp
+                                    Group</a></li>
+                            <li role="separator" class="divider"></li>
                             <li><a href="/logout/"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp
                                 Logout</a>
                             </li>

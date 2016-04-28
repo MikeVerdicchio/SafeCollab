@@ -16,7 +16,11 @@
                     <tr>
                         <td><strong>Users</strong></td>
                         <td><strong>Group Status</strong></td>
+                        {% if user.userprofile.site_manager %}
                         <td><strong>Add/Remove User</strong></td>
+                        {% else %}
+                            <td><strong>Add User</strong></td>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
