@@ -105,6 +105,7 @@ def list_users(request):
     })
 
 def manage_group(request):
+    groups = Group.objects.all()
     if request.user.userprofile.site_manager:
         groups = Group.objects.all()
     else:
