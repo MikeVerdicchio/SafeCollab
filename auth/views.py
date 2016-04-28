@@ -138,14 +138,11 @@ def show_group(request, name):
     })
 
 def create_group(request):
-    if not request.user.userprofile.site_manager:
-        return homepage(request)
     users = User.objects.all()
     if request.method == "POST":
         name = request.POST.get('group')
         newgroup = Group.objects.create(name=name)
         add = request.POST.getlist('add')
-        print(add)
         for x in add:
             user = User.objects.get(username=x)
             newgroup.user_set.add(user)
