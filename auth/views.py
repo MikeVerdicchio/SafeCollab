@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from auth.models import UserProfile
-from .forms import RegisterForm, LoginForm, SMForm
+from .forms import RegisterForm, LoginForm, SMForm, GroupForm
 from Crypto.PublicKey import RSA
 from Crypto import Random
 from django.core.mail import EmailMessage
@@ -91,3 +91,47 @@ def list_users(request):
         'users': users,
         'form': SMForm()
     })
+
+def manage_group(request):
+    groups = Group.objects.all()
+    users = User.objects.all()
+    return render(request, 'group.html', {
+        'groups': groups,
+        'users': users,
+    })
+
+def show_group(request, name):
+    group = Group.objects.get(name=name)
+    if request.method == "POST":
+        remove = request.POST.getlist('remove')
+        for x in remove:
+            user = User.objects.get(username=x)
+            if user.groups.filter(name=name).exists():
+                group.user_set.remove(user)
+            else:
+                group.user_set.add(user)
+    users = group.user_set.all()
+    all_users = User.objects.all()
+    return render(request, 'group_info.html', {
+        'users': users,
+        'all_users': all_users,
+    })
+
+def create_group(request):
+    if not request.user.userprofile.site_manager:
+        return homepage(request)
+    users = User.objects.all()
+    if request.method == "POST":
+        name = request.POST.get('group')
+        newgroup = Group.objects.create(name=name)
+        add = request.POST.getlist('add')
+        print(add)
+        for x in add:
+            user = User.objects.get(username=x)
+            newgroup.user_set.add(user)
+
+    return render(request, 'create_group.html', {
+        'users': users,
+        'form': GroupForm()
+    })
+
