@@ -99,17 +99,22 @@ def fadd(request, folder_pk):
     except Report.DoesNotExist:
         report_mine = None
     success = ""
+    fail = ""
+    if f.creator != request.user:
+        fail = "You cannot add to a folder you do not own."
     if request.method == "POST":
         for x in report_mine[0:]:
-            if request.POST.get(x.uniqueid) != None:
-                x.folder = f
-                x.save()
-                success = "Report has been successfully added to this folder"
+            if f.creator == request.user:
+                if request.POST.get(x.uniqueid) != None:
+                    x.folder = f
+                    x.save()
+                    success = "Report has been successfully added to this folder"
     return render(request, 'folder_add.html', {
         'folder_report': folder_report,
         'report_mine': report_mine,
         'folder': f,
         'success': success,
+        'fail': fail,
     })
 
 def fremove(request, folder_pk):
