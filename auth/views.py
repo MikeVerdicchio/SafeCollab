@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
+from django.core.files import File
 from auth.models import UserProfile
 from .forms import RegisterForm, LoginForm, SMForm, GroupForm
 from Crypto.PublicKey import RSA
@@ -10,7 +11,10 @@ from Crypto import Random
 from django.core.mail import EmailMessage
 from home.views import index as homepage
 from django.contrib.auth.decorators import login_required
-
+from django.http import HttpResponse
+from django.utils.encoding import smart_str
+from django.core.servers.basehttp import FileWrapper
+import os
 
 def login_user(request):
     if request.method == 'POST':
@@ -39,6 +43,14 @@ def key_generation():
     key = RSA.generate(1024, random_generator)
     return key
 
+def create_file(request):
+
+    # filename = os.getcwd()+'/auth/key.txt'
+    # wrapper = FileWrapper(File(filename))
+    # response = HttpResponse(wrapper, content_type='text/plain')
+    # response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
+    # response['Content-Length'] = os.path.getsize(filename)
+    # return response
 
 def register_user(request):
     if request.method == 'POST':
@@ -56,13 +68,16 @@ def register_user(request):
                                                 last_name=last)
                 user.save()
                 key = key_generation()
-                public_key = key.exportKey(passphrase=password, pkcs=8)
+                public_key = key.publickey().exportKey()
+                # public_key = key.exportKey(passphrase=password, pkcs=8)
                 user = User.objects.get(username=username)
                 user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager,
                                                           public_key=public_key)
                 user_profile.save()
-                message = 'Hi' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
+                message = 'Hi ' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
+                filename = os.getcwd()+'/auth/key.txt'
                 email = EmailMessage('Welcome to SafeCollab', message, to=[email])
+                email.attach_file(filename, "application/text")
                 email.send()
                 user = authenticate(username=username, password=password)
                 if user is not None:
