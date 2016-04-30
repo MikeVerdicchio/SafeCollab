@@ -44,8 +44,6 @@ def key_generation():
     key = RSA.generate(1024, random_generator)
     return key
 
-<<<<<<< HEAD
-=======
 # def create_file(request):
 
 # filename = os.getcwd()+'/auth/key.pem'
@@ -55,7 +53,6 @@ def key_generation():
 # response['Content-Length'] = os.path.getsize(filename)
 # return response
 
->>>>>>> tahiya.txt/master
 def register_user(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
