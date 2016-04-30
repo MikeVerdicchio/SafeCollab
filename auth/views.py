@@ -76,10 +76,6 @@ def register_user(request):
                 f = open(filename,'w')
                 f.write(private_key.decode('utf-8'))
                 f.close()
-                print(private_key)
-                filename = os.getcwd() + '/auth/key.pem'
-                f = open(filename, 'wb')
-                f.write(private_key)
                 user = User.objects.get(username=username)
                 user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager,
                                                           public_key=public_key, security_question=security_question)
