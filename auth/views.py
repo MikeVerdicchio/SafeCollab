@@ -44,7 +44,7 @@ def key_generation():
     return key
 
 def create_file(request):
-
+    s = None
     # filename = os.getcwd()+'/auth/key.txt'
     # wrapper = FileWrapper(File(filename))
     # response = HttpResponse(wrapper, content_type='text/plain')

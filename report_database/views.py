@@ -19,13 +19,14 @@ def index(request):
 
 def fmanage(request):
     current_user = request.user
-    folder_all = Folder.objects.all()
+    folder_data = Folder.objects.all()
     permission = ""
-    folder_data = Folder.objects.filter(Q(creator=current_user)|Q(private=False)|Q(shared_users=current_user))
+    if current_user.is_superuser== False:
+        folder_data = Folder.objects.filter(Q(creator=current_user)|Q(private=False)|Q(shared_users=current_user))
     if request.method == "POST":
         for x in folder_data[0:]:
             if request.POST.get(x.uniqueid) != None:
-                if x.creator == current_user:
+                if x.creator == current_user or request.user.is_superuser == True:
                     x.delete()
                 else:
                     permission = "You cannot delete someone else's report."
@@ -39,7 +40,7 @@ def fedit(request, folder_pk):
     folder_data = Folder.objects.all()
     form = FolderForm(request.POST)
     readonly = ""
-    if(f.creator == request.user):
+    if(f.creator == request.user) or request.user.is_superuser == True:
         if request.method == "POST":
             if form.is_valid():
                 folder_name = form.cleaned_data["folder_name"]
@@ -100,11 +101,11 @@ def fadd(request, folder_pk):
         report_mine = None
     success = ""
     fail = ""
-    if f.creator != request.user:
+    if f.creator != request.user and request.user.is_superuser == False:
         fail = "You cannot add to a folder you do not own."
     if request.method == "POST":
         for x in report_mine[0:]:
-            if f.creator == request.user:
+            if f.creator == request.user or request.user.is_superuser == True:
                 if request.POST.get(x.uniqueid) != None:
                     x.folder = f
                     x.save()
@@ -124,7 +125,7 @@ def fremove(request, folder_pk):
     fail = ""
     if request.method == "POST":
         for x in report_folder[0:]:
-            if x.creator == request.user:
+            if x.creator == request.user or request.user.is_superuser == True:
                 if request.POST.get(x.uniqueid) != None:
                     x.folder = None
                     x.save()
@@ -202,13 +203,8 @@ def create(request):
             encrypt3 = form.cleaned_data["encrypt_3"]
 
 
-            # if(request.POST.get("file1") != None):
-            #     file1 = request.POST.get("file1")
-            #     encrypt1 = request.POST.get("")
-            # if(request.POST.get("file2") != None):
-            #     file2 = request.POST.get("file2")
-            # if(request.POST.get("file3") != None):
-            #     file3 = request.POST.get("file3")
+
+
 
             report_data = Report.objects.all()
             unique = True
@@ -216,7 +212,7 @@ def create(request):
             #     if x.report_name == report_name:
             #         unique = False
             if unique:
-                rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv, file_1=file1, encrypt_1=encrypt1, file_2=file2, encrypt_2=encrypt2, file_3=file3, encrypt_3=encrypt3)
+                rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv, file_1=file1, encrypt_1=encrypt1, file_2=file2, encrypt_2=encrypt2, file_3=file3, encrypt_3=encrypt3, f1n=file1.name, f2n = file2.name, f3n = file3.name)
                 rep.save()
                 success = "Report has been saved!"
                 return render( request, 'report_create.html', {
@@ -247,10 +243,11 @@ def manage(request):
     permission = ""
     report_data = Report.objects.all()
     #if(current_user.site_manager == False):
-    report_data = Report.objects.filter(Q(creator_id=current_user)|Q(private=False))
+    if request.user.is_superuser == False:
+        report_data = Report.objects.filter(Q(creator_id=current_user)|Q(private=False))
     if request.method == "POST":
         for x in report_data[0:]:
-            if x.creator == request.user:
+            if x.creator == request.user or request.user.is_superuser == True:
                 if request.POST.get(x.uniqueid)!= None:
                     x.delete()
             else:
@@ -266,7 +263,7 @@ def reportedit(request, report_pk):
     report_data = Report.objects.all()
     readonly = ""
     form = ReportForm( request.POST , request.FILES)
-    if(request.user == r.creator):
+    if(request.user == r.creator) or request.user.is_superuser == True:
         if request.method == "POST":
             if form.is_valid():
                 report_name = form.cleaned_data["report_name"]
@@ -280,11 +277,12 @@ def reportedit(request, report_pk):
                 encrypt1 = form.cleaned_data["encrypt_1"]
                 encrypt2 = form.cleaned_data["encrypt_2"]
                 encrypt3 = form.cleaned_data["encrypt_3"]
-                #r.f1n = encrypt1.name
-                # if(encrypt2 != None):
-                #     r.f2n = encrypt2.name
-                # if(encrypt3 != None):
-                #     r.f3n = encrypt3.name
+                if encrypt1 != None:
+                    r.f1n = encrypt1.name
+                if(encrypt2 != None):
+                    r.f2n = encrypt2.name
+                if(encrypt3 != None):
+                    r.f3n = encrypt3.name
                 r.report_name = report_name
                 r.date = date
                 r.sdesc = sdesc
@@ -313,10 +311,23 @@ def reportedit(request, report_pk):
     else:
         readonly = 'READ ONLY'
     form = ReportForm(model_to_dict(r))
+    f1n = "None"
+    f2n = "None"
+    f3n = "None"
+    if(r.f1n!= None):
+        f1n = r.f1n;
+    if (r.f2n != None):
+        f2n = r.f2n;
+    if (r.f3n != None):
+        f3n = r.f3n;
+    print("FILE1:" + f1n  + " asdfdsa" + f1n)
     return render(request, 'report_edit.html', {
         'readonly': readonly,
         'report': r,
         'form': form,
+        'f1n': f1n,
+        'f2n': f2n,
+        'f3n': f3n,
     })
 
 def addreport(request, folder_pk, report_pk):

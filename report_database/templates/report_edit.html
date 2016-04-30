@@ -28,14 +28,32 @@
                 <h3><strong><font color="red">{{ failure }}</font></strong></h3>
                 <div class="contact-form">
                     <form role="form" method="post" enctype="multipart/form-data">
+                        File Slot One:
+                        {{ f1n }}<br>
+                        <file  src="/media/Homework.txt" />
+                        File Slot Two:
+                        {{f2n}} <br>
+                        File Slot Three:
+                        {{f3n}}<br>
                         {% csrf_token %}
                         <div class="row">
                             {% for field in form %}
+
                                 <div class="form-group col-lg-12">
                                     {{ field.label_tag }}
                                     {{ field | add_class:"form-control" }}
                                 </div>
+
+
+
+
                             {% endfor %}
+                            <!--
+                            <p><label for="report_name"> Report Name:</label></label>
+                                <input id="report_name" type=text" name="report_name" maxlength="100"
+                                />
+                                </p>
+                            -->
                         </div>
                         <input type="submit" value="Submit">
                     </form>
