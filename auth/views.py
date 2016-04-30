@@ -44,19 +44,6 @@ def key_generation():
     key = RSA.generate(1024, random_generator)
     return key
 
-<<<<<<< HEAD
-=======
-
-# def create_file(request):
-
-# filename = os.getcwd()+'/auth/key.pem'
-# wrapper = FileWrapper(File(filename))
-# response = HttpResponse(wrapper, content_type='text/plain')
-# response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
-# response['Content-Length'] = os.path.getsize(filename)
-# return response
-
->>>>>>> change_password
 def register_user(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -76,17 +63,10 @@ def register_user(request):
                 key = key_generation()
                 public_key = key.publickey().exportKey()
                 private_key = key.exportKey()
-<<<<<<< HEAD
                 filename = os.getcwd()+'/auth/key.pem'
                 f = open(filename,'w')
                 f.write(private_key.decode('utf-8'))
                 f.close()
-=======
-                print(private_key)
-                filename = os.getcwd() + '/auth/key.pem'
-                f = open(filename, 'wb')
-                f.write(private_key)
->>>>>>> change_password
                 user = User.objects.get(username=username)
                 user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager,
                                                           public_key=public_key, security_question=security_question)
