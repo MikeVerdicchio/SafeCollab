@@ -43,9 +43,9 @@ def key_generation():
     key = RSA.generate(1024, random_generator)
     return key
 
-def create_file(request):
+#def create_file(request):
 
-    # filename = os.getcwd()+'/auth/key.txt'
+    # filename = os.getcwd()+'/auth/key.pem'
     # wrapper = FileWrapper(File(filename))
     # response = HttpResponse(wrapper, content_type='text/plain')
     # response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
@@ -69,16 +69,22 @@ def register_user(request):
                 user.save()
                 key = key_generation()
                 public_key = key.publickey().exportKey()
-                # public_key = key.exportKey(passphrase=password, pkcs=8)
+                private_key = key.exportKey()
+                filename = os.getcwd()+'/auth/key.pem'
+                f = open(filename,'r+')
+                f.write(private_key.decode('utf-8'))
+
                 user = User.objects.get(username=username)
                 user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager,
                                                           public_key=public_key)
                 user_profile.save()
                 message = 'Hi ' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
-                filename = os.getcwd()+'/auth/key.txt'
+                filename = os.getcwd()+'/auth/key.pem'
                 email = EmailMessage('Welcome to SafeCollab', message, to=[email])
                 email.attach_file(filename, "application/text")
                 email.send()
+                f = open(filename,'w+')
+                f.close()
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     if user.is_active:
