@@ -5,6 +5,7 @@ from .models import Folder
 from .forms import ReportForm
 from .forms import deleteReportForm
 from .forms import FolderForm
+from auth.models import UserProfile
 from itertools import chain
 
 from django.db.models import Q
@@ -26,7 +27,7 @@ def fmanage(request):
     if request.method == "POST":
         for x in folder_data[0:]:
             if request.POST.get(x.uniqueid) != None:
-                if x.creator == current_user or request.user.is_superuser == True:
+                if x.creator == current_user or UserProfile.objects.get(username=current_user).site_manager is True:
                     x.delete()
                 else:
                     permission = "You cannot delete someone else's report."
@@ -40,7 +41,7 @@ def fedit(request, folder_pk):
     folder_data = Folder.objects.all()
     form = FolderForm(request.POST)
     readonly = ""
-    if(f.creator == request.user) or request.user.is_superuser == True:
+    if(f.creator == request.user) or UserProfile.objects.get(username=request.user).site_manager is True:
         if request.method == "POST":
             if form.is_valid():
                 folder_name = form.cleaned_data["folder_name"]
@@ -101,11 +102,11 @@ def fadd(request, folder_pk):
         report_mine = None
     success = ""
     fail = ""
-    if f.creator != request.user and request.user.is_superuser == False:
+    if f.creator != request.user and UserProfile.objects.get(username=request.user).site_manager is False:
         fail = "You cannot add to a folder you do not own."
     if request.method == "POST":
         for x in report_mine[0:]:
-            if f.creator == request.user or request.user.is_superuser == True:
+            if f.creator == request.user or UserProfile.objects.get(username=request.user).site_manager is False:
                 if request.POST.get(x.uniqueid) != None:
                     x.folder = f
                     x.save()
@@ -125,7 +126,7 @@ def fremove(request, folder_pk):
     fail = ""
     if request.method == "POST":
         for x in report_folder[0:]:
-            if x.creator == request.user or request.user.is_superuser == True:
+            if x.creator == request.user or UserProfile.objects.get(username=request.user).site_manager is True:
                 if request.POST.get(x.uniqueid) != None:
                     x.folder = None
                     x.save()
@@ -247,7 +248,7 @@ def manage(request):
         report_data = Report.objects.filter(Q(creator_id=current_user)|Q(private=False))
     if request.method == "POST":
         for x in report_data[0:]:
-            if x.creator == request.user or request.user.is_superuser == True:
+            if x.creator == request.user or UserProfile.objects.get(username=request.user).site_manager is True:
                 if request.POST.get(x.uniqueid)!= None:
                     x.delete()
             else:
@@ -263,7 +264,7 @@ def reportedit(request, report_pk):
     report_data = Report.objects.all()
     readonly = ""
     form = ReportForm( request.POST , request.FILES)
-    if(request.user == r.creator) or request.user.is_superuser == True:
+    if(request.user == r.creator) or UserProfile.objects.get(username=request.user).site_manager is True:
         if request.method == "POST":
             if form.is_valid():
                 report_name = form.cleaned_data["report_name"]
