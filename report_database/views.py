@@ -213,7 +213,19 @@ def create(request):
             #     if x.report_name == report_name:
             #         unique = False
             if unique:
-                rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv, file_1=file1, encrypt_1=encrypt1, file_2=file2, encrypt_2=encrypt2, file_3=file3, encrypt_3=encrypt3, f1n=file1.name, f2n = file2.name, f3n = file3.name)
+                if file1 is None:
+                    file1name = ''
+                else:
+                    file1name = file1.name
+                if file2 is None:
+                    file2name = ''
+                else:
+                    file2name = file2.name
+                if file3 is None:
+                    file3name = ''
+                else:
+                    file3name = file3.name
+                rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv, file_1=file1, encrypt_1=encrypt1, file_2=file2, encrypt_2=encrypt2, file_3=file3, encrypt_3=encrypt3, f1n=file1name, f2n = file2name, f3n = file3name)
                 rep.save()
                 success = "Report has been saved!"
                 return render( request, 'report_create.html', {
