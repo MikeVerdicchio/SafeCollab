@@ -23,8 +23,7 @@ class ComposeForm(forms.Form):
     body = forms.CharField(label=_(u"Body"),
         widget=forms.Textarea(attrs={'rows': '12', 'cols':'55'}))
     encrypt = forms.BooleanField(label=_(u"Encrypt"), required=False)
-    encrypt_pw = forms.CharField(label=_(u"Encrypt_pw"), required=False, max_length=120)
-        
+
     def __init__(self, *args, **kwargs):
         recipient_filter = kwargs.pop('recipient_filter', None)
         super(ComposeForm, self).__init__(*args, **kwargs)
@@ -39,22 +38,24 @@ class ComposeForm(forms.Form):
         subject = self.cleaned_data['subject']
         body = self.cleaned_data['body']
         encrypt = self.cleaned_data['encrypt']
-        encrypt_pw = self.cleaned_data['encrypt_pw']
         message_list = []
-        if encrypt == True:
-            key = UserProfile.objects.get(username__exact=sender).public_key
-            try:
-                importkey = RSA.importKey(key, passphrase=encrypt_pw)
-            except ValueError:
-                print("Incorrect password")
-            body = importkey.encrypt(body.encode('utf-8'), 32)
+        encrypt_message = (b'',)
         for r in recipients:
+            if encrypt is True:
+                key = UserProfile.objects.get(username__exact=r).public_key
+                try:
+                    importkey = RSA.importKey(key)
+                except ValueError:
+                    print("Incorrect password")
+                encrypt_message = importkey.encrypt(body.encode('utf-8'), 32)
+                body = encrypt_message
             msg = Message(
                 sender = sender,
                 recipient = r,
                 subject = subject,
                 body = body,
                 encrypt = encrypt,
+                encrypt_message = encrypt_message[0]
             )
             if parent_msg is not None:
                 msg.parent_msg = parent_msg
