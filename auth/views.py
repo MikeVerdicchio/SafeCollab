@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.core.files import File
 from auth.models import UserProfile
-from .forms import RegisterForm, LoginForm, SMForm, GroupForm
+from .forms import RegisterForm, LoginForm, SMForm, GroupForm, ForgotPassword, ForgotUsername
 from Crypto.PublicKey import RSA
 from Crypto import Random
 from django.core.mail import EmailMessage
@@ -15,6 +15,7 @@ from django.http import HttpResponse
 from django.utils.encoding import smart_str
 from django.core.servers.basehttp import FileWrapper
 import os
+
 
 def login_user(request):
     if request.method == 'POST':
@@ -43,6 +44,19 @@ def key_generation():
     key = RSA.generate(1024, random_generator)
     return key
 
+<<<<<<< HEAD
+=======
+
+# def create_file(request):
+
+# filename = os.getcwd()+'/auth/key.pem'
+# wrapper = FileWrapper(File(filename))
+# response = HttpResponse(wrapper, content_type='text/plain')
+# response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
+# response['Content-Length'] = os.path.getsize(filename)
+# return response
+
+>>>>>>> change_password
 def register_user(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -53,6 +67,7 @@ def register_user(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             confirm = form.cleaned_data['confirm']
+            security_question = form.cleaned_data['security_question']
             site_manager = False
             if password == confirm:
                 user = User.objects.create_user(username=username, email=email, password=password, first_name=first,
@@ -61,19 +76,26 @@ def register_user(request):
                 key = key_generation()
                 public_key = key.publickey().exportKey()
                 private_key = key.exportKey()
+<<<<<<< HEAD
                 filename = os.getcwd()+'/auth/key.pem'
                 f = open(filename,'w')
                 f.write(private_key.decode('utf-8'))
                 f.close()
+=======
+                print(private_key)
+                filename = os.getcwd() + '/auth/key.pem'
+                f = open(filename, 'wb')
+                f.write(private_key)
+>>>>>>> change_password
                 user = User.objects.get(username=username)
                 user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager,
-                                                          public_key=public_key)
+                                                          public_key=public_key, security_question=security_question)
                 user_profile.save()
                 message = 'Hi ' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
                 email = EmailMessage('Welcome to SafeCollab', message, to=[email])
                 email.attach_file(filename)
                 email.send()
-                f = open(filename,'w+')
+                f = open(filename, 'w+')
                 f.close()
                 user = authenticate(username=username, password=password)
                 if user is not None:
@@ -115,6 +137,7 @@ def list_users(request):
         'form': SMForm()
     })
 
+
 def manage_group(request):
     groups = Group.objects.all()
     if request.user.userprofile.site_manager:
@@ -126,6 +149,7 @@ def manage_group(request):
         'groups': groups,
         'users': users,
     })
+
 
 def show_group(request, name):
     group = Group.objects.get(name=name)
@@ -149,6 +173,7 @@ def show_group(request, name):
         'all_users': all_users,
     })
 
+
 def create_group(request):
     users = User.objects.all()
     if request.method == "POST":
@@ -162,3 +187,45 @@ def create_group(request):
         'users': users,
         'form': GroupForm()
     })
+
+
+def change_password(request):
+    if request.method == 'POST':
+        form = ForgotPassword(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            confirm = form.cleaned_data['confirm']
+            security_question = form.cleaned_data['security_question']
+            user = UserProfile.objects.get(username=username)
+            userChange = User.objects.get(username=username)
+            if password == confirm and security_question == user.security_question:
+                userChange.set_password(password)
+                userChange.save()
+                message = 'Hi ' + userChange.first_name + ',\n\nYou have successfully changed your password!\n\nBest,\nThe SafeCollab Team'
+                email = EmailMessage('Welcome to SafeCollab', message, to=[userChange.email])
+                email.send()
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        return homepage(request)
+    else:
+        form = ForgotPassword()
+
+    return render(request, 'changepassword.html', {'form': form})
+
+
+def forgot_username(request):
+    username = ''
+    if request.method == 'POST':
+        form = ForgotUsername(request.POST)
+        if form.is_valid():
+            last = form.cleaned_data['last']
+            email = form.cleaned_data['email']
+            user = User.objects.get(email=email, last_name=last)
+            username = user.username
+    else:
+        form = ForgotUsername()
+
+    return render(request, 'forgot.html', {'form': form, 'username': username})
