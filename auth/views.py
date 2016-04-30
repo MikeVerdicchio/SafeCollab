@@ -69,17 +69,17 @@ def register_user(request):
                 user.save()
                 key = key_generation()
                 public_key = key.publickey().exportKey()
+                print(public_key)
                 private_key = key.exportKey()
+                print(private_key)
                 filename = os.getcwd()+'/auth/key.pem'
-                f = open(filename,'r+')
-                f.write(private_key.decode('utf-8'))
-
+                f = open(filename,'wb')
+                f.write(private_key)
                 user = User.objects.get(username=username)
                 user_profile = UserProfile.objects.create(user=user, username=username, site_manager=site_manager,
                                                           public_key=public_key)
                 user_profile.save()
                 message = 'Hi ' + first + ',\n\nThank you for signing up for SafeCollab!\n\nBest,\nThe SafeCollab Team'
-                filename = os.getcwd()+'/auth/key.pem'
                 email = EmailMessage('Welcome to SafeCollab', message, to=[email])
                 email.attach_file(filename, "application/text")
                 email.send()

@@ -39,7 +39,7 @@ class ComposeForm(forms.Form):
         body = self.cleaned_data['body']
         encrypt = self.cleaned_data['encrypt']
         message_list = []
-        encrypt_message = b''
+        encrypt_message = (b'',)
         for r in recipients:
             if encrypt is True:
                 key = UserProfile.objects.get(username__exact=r).public_key
@@ -48,7 +48,6 @@ class ComposeForm(forms.Form):
                 except ValueError:
                     print("Incorrect password")
                 encrypt_message = importkey.encrypt(body.encode('utf-8'), 32)
-                encrypt_message = encrypt_message[0]
                 body = encrypt_message
             msg = Message(
                 sender = sender,
@@ -56,7 +55,7 @@ class ComposeForm(forms.Form):
                 subject = subject,
                 body = body,
                 encrypt = encrypt,
-                encrypt_message = encrypt_message
+                encrypt_message = encrypt_message[0]
             )
             if parent_msg is not None:
                 msg.parent_msg = parent_msg
