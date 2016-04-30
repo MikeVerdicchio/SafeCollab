@@ -15,6 +15,8 @@ class ReportForm(forms.Form):
     encrypt_2 = forms.BooleanField(label='Encrypt File 2', required=False)
     file_3 = forms.FileField(label='File 3', required=False)
     encrypt_3 = forms.BooleanField(label='Encrypt File 3', required=False)
+    shared_user_field = forms.CharField(label='Users Given Access (Seperate by Commas)', max_length=1000,
+                                        required=False)
 
 class FolderForm(forms.Form):
     folder_name = forms.CharField(label='Folder Name*', max_length=50)

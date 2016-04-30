@@ -5,12 +5,12 @@ from .models import Folder
 from .forms import ReportForm
 from .forms import deleteReportForm
 from .forms import FolderForm
-from auth.models import UserProfile
+from django.config.auth.models import UserProfile
 from itertools import chain
 
 from django.db.models import Q
 #from .forms import EditReportForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.shortcuts import render_to_response, get_object_or_404
 
 # Create your views here.
@@ -180,6 +180,13 @@ def fcreate(request):
         'failure': failure,
     })
 
+def sameGroup(User1, User2):
+    g = Group.objects.all()
+    for x in g:
+        if (User1 in g.user_set) and (User2 in g.user_set):
+            return True
+    return False
+
 def create(request):
     if request.method == "GET":
         success = ""
@@ -202,11 +209,10 @@ def create(request):
             encrypt1 = form.cleaned_data["encrypt_1"]
             encrypt2 = form.cleaned_data["encrypt_2"]
             encrypt3 = form.cleaned_data["encrypt_3"]
-
-
-
-
-
+            shared_user_field = form.cleaned_data["shared_user_field"]
+            shared_user_names = [x.strip() for x in shared_user_field.split(',')]
+            unique = True
+            report_data = Report.objects.all()
             report_data = Report.objects.all()
             unique = True
             # for x in report_data[0:]:
@@ -215,6 +221,14 @@ def create(request):
             if unique:
                 rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv, file_1=file1, encrypt_1=encrypt1, file_2=file2, encrypt_2=encrypt2, file_3=file3, encrypt_3=encrypt3, f1n=file1.name, f2n = file2.name, f3n = file3.name)
                 rep.save()
+                for z in shared_user_names:
+                    try:
+                        u = User.objects.get(username=z)
+                    except User.DoesNotExist:
+                        u=None
+                    if u!= None:
+                        if sameGroup(request.user, u):
+                            rep.shared_users.add(u)
                 success = "Report has been saved!"
                 return render( request, 'report_create.html', {
                 'form': form,
@@ -312,6 +326,17 @@ def reportedit(request, report_pk):
     else:
         readonly = 'READ ONLY'
     form = ReportForm(model_to_dict(r))
+    userstring = ""
+    for x in r.shared_users.all():
+        print(x.username)
+        userstring += x.username
+        userstring += ","
+    userstring = userstring[:-1]
+    form = ReportForm({'report_name': r.report_name })
+    fdict = {'folder_name': f.folder_name, 'private': f.private, 'shared_user_field': userstring}
+
+
+
     f1n = "None"
     f2n = "None"
     f3n = "None"
