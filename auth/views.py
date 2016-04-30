@@ -205,3 +205,18 @@ def change_password(request):
         form = ForgotPassword()
 
     return render(request, 'changepassword.html', {'form': form})
+
+
+def forgot_username(request):
+    username = ''
+    if request.method == 'POST':
+        form = ForgotUsername(request.POST)
+        if form.is_valid():
+            last = form.cleaned_data['last']
+            email = form.cleaned_data['email']
+            user = User.objects.get(email=email, last_name=last)
+            username = user.username
+    else:
+        form = ForgotUsername()
+
+    return render(request, 'forgot.html', {'form': form, 'username': username})

@@ -19,6 +19,7 @@ class RegisterForm(forms.Form):
 
 class ForgotUsername(forms.Form):
     email = forms.EmailField(label='Email', max_length=50)
+    last = forms.CharField(label='Last Name', max_length=30)
 
 
 class ForgotPassword(forms.Form):
