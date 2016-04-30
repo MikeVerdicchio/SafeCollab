@@ -22,7 +22,7 @@ def fmanage(request):
     current_user = request.user
     folder_data = Folder.objects.all()
     permission = ""
-    if current_user.is_superuser== False:
+    if UserProfile.objects.get(username=request.user).site_manager is False:
         folder_data = Folder.objects.filter(Q(creator=current_user)|Q(private=False)|Q(shared_users=current_user))
     if request.method == "POST":
         for x in folder_data[0:]:
@@ -244,7 +244,7 @@ def manage(request):
     permission = ""
     report_data = Report.objects.all()
     #if(current_user.site_manager == False):
-    if request.user.is_superuser == False:
+    if UserProfile.objects.get(username=request.user).site_manager is False:
         report_data = Report.objects.filter(Q(creator_id=current_user)|Q(private=False))
     if request.method == "POST":
         for x in report_data[0:]:
