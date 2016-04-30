@@ -43,7 +43,7 @@ def key_generation():
     key = RSA.generate(1024, random_generator)
     return key
 
-def create_file(request):
+#def create_file(request):
 
     # filename = os.getcwd()+'/auth/key.txt'
     # wrapper = FileWrapper(File(filename))

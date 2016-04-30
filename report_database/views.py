@@ -2,11 +2,15 @@ from django.shortcuts import render
 from django.forms.models import model_to_dict
 from .models import Report
 from .models import Folder
+from .models import Documents
 from .forms import ReportForm
 from .forms import deleteReportForm
 from .forms import FolderForm
+from .forms import DocumentForm
 from itertools import chain
-
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 #from .forms import EditReportForm
 from django.contrib.auth.models import User
@@ -194,12 +198,12 @@ def create(request):
             sdesc = form.cleaned_data["sdesc"]
             ldesc = form.cleaned_data['ldesc']
             priv = form.cleaned_data["private"]
-            file1 = form.cleaned_data["file_1"]
-            file2 = form.cleaned_data["file_2"]
-            file3 = form.cleaned_data["file_3"]
-            encrypt1 = form.cleaned_data["encrypt_1"]
-            encrypt2 = form.cleaned_data["encrypt_2"]
-            encrypt3 = form.cleaned_data["encrypt_3"]
+            #file1 = form.cleaned_data["file_1"]
+            #file2 = form.cleaned_data["file_2"]
+            #file3 = form.cleaned_data["file_3"]
+            #encrypt1 = form.cleaned_data["encrypt_1"]
+            #encrypt2 = form.cleaned_data["encrypt_2"]
+            #encrypt3 = form.cleaned_data["encrypt_3"]
 
 
             # if(request.POST.get("file1") != None):
@@ -216,7 +220,7 @@ def create(request):
             #     if x.report_name == report_name:
             #         unique = False
             if unique:
-                rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv, file_1=file1, encrypt_1=encrypt1, file_2=file2, encrypt_2=encrypt2, file_3=file3, encrypt_3=encrypt3)
+                rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv)#, file_1=file1, encrypt_1=encrypt1, file_2=file2, encrypt_2=encrypt2, file_3=file3, encrypt_3=encrypt3)
                 rep.save()
                 success = "Report has been saved!"
                 return render( request, 'report_create.html', {
@@ -274,12 +278,12 @@ def reportedit(request, report_pk):
                 sdesc = form.cleaned_data["sdesc"]
                 ldesc = form.cleaned_data['ldesc']
                 priv = form.cleaned_data["private"]
-                file1 = form.cleaned_data["file_1"]
-                file2 = form.cleaned_data["file_2"]
-                file3 = form.cleaned_data["file_3"]
-                encrypt1 = form.cleaned_data["encrypt_1"]
-                encrypt2 = form.cleaned_data["encrypt_2"]
-                encrypt3 = form.cleaned_data["encrypt_3"]
+                #file1 = form.cleaned_data["file_1"]
+                #file2 = form.cleaned_data["file_2"]
+                #file3 = form.cleaned_data["file_3"]
+                #encrypt1 = form.cleaned_data["encrypt_1"]
+                #encrypt2 = form.cleaned_data["encrypt_2"]
+                #encrypt3 = form.cleaned_data["encrypt_3"]
                 #r.f1n = encrypt1.name
                 # if(encrypt2 != None):
                 #     r.f2n = encrypt2.name
@@ -290,12 +294,12 @@ def reportedit(request, report_pk):
                 r.sdesc = sdesc
                 r.ldesc = ldesc
                 r.private = priv
-                r.file_1 = file1
-                r.file_2 = file2
-                r.file_3 = file3
-                r.encrypt_1 = encrypt1
-                r.encrypt_2 = encrypt2
-                r.encrypt_3 = encrypt3
+                #r.file_1 = file1
+                #r.file_2 = file2
+                #r.file_3 = file3
+                #r.encrypt_1 = encrypt1
+                #r.encrypt_2 = encrypt2
+                #r.encrypt_3 = encrypt3
                 r.save()
                 success = "Report has been updated!"
                 return render(request, 'report_edit.html', {
@@ -322,5 +326,33 @@ def reportedit(request, report_pk):
 def addreport(request, folder_pk, report_pk):
     return render(request, 'report_home.html')
 
+def listfiles(request, report_pk):
+    t = Report.objects.get(uniqueid=report_pk)
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = form.cleaned_data["docfile"]
+            encrypt = form.cleaned_data["encrypt"]
+            private = False
+            if t.private:
+                private=True
+            newdoc = Documents(docfile=file, encrypt=encrypt, private=private, report=t)
+            newdoc.save()
+            if t.folder:
+                u = Folders.objects.get(t.folder.pk)
+                for i in u.shared_users:
+                    newdoc.shared_users.add(i)
+            else:
+                newdoc.shared_users.add(request.user)
+            #newdoc.save()
+            return HttpResponseRedirect(reverse('report_database.views.listfiles',args=(report_pk,)))
+    else:
+        form = DocumentForm()
 
+    documents = Documents.objects.all().filter(report=t)
+
+    return render(request,
+            'files.html',
+            {'documents': documents, 'form': form}
+    )
 

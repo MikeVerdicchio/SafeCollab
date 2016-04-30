@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^$', views.index, name='report_home'),
     url(r'^create/$', views.create, name='report_create'),
     url(r'^manage/$', views.manage, name='report_manage'),
+    url(r'^listfiles/(?P<report_pk>.*)$', views.listfiles, name='list_files'),
     url(r'^report_edit/(?P<report_pk>.*)$', views.reportedit, name='report_edit'),
     url(r'^folder_edit/(?P<folder_pk>.*)$', views.fedit, name='folder_edit'),
     url(r'^folder_add/(?P<folder_pk>.*)$', views.fadd, name='folder_add'),
