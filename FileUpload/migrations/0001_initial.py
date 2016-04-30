@@ -11,11 +11,10 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Article',
+            name='Document',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
-                ('title', models.CharField(max_length=200)),
-                ('body', models.TextField()),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('docfile', models.FileField(blank=True, upload_to='documents')),
             ],
         ),
     ]

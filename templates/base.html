@@ -1,3 +1,4 @@
+{% load inbox %}
 <!DOCTYPE html>
 <html>
 
@@ -32,7 +33,8 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
-                    <li><a href="/messages/inbox">Inbox <span class="badge badge-important">0</span></a></li>
+                    <li><a href="/messages/inbox">Inbox <span class="badge badge-important">{% inbox_count %}</span></a>
+                    </li>
                     <li class="dropdown">
                         <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">{{ user.first_name }} {{ user.last_name }}<span

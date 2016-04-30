@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
-{% block title %}Log in{% endblock %}
+{% block title %}Forgot Username{% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="row">
-            <div class="col-md-5 margin30">
+            <div class="col-lg-5">
                 <br><br>
-                <h3 class="heading">Please Login</h3>
+                <h3 class="heading">Forgot Username <strong>{{ username }}</strong></h3>
                 <div class="contact-form">
-                    <form role="form" method="post" action="/login/">
+                    <form role="form" method="post" action="/forgot/">
                         {% csrf_token %}
                         <div class="row">
                             {% for field in form %}
@@ -19,10 +19,8 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <input type="submit" value="Login!"/>
+                        <input type="submit" value="Submit"/>
                     </form>
-                    <br>
-                    <a href="/forgot/">Forgot Username</a> | <a href="/changepassword/">Forgot Password</a>
                 </div>
             </div>
         </div>
