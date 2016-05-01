@@ -3,15 +3,17 @@ from django.forms.models import model_to_dict
 from .models import Report
 from .models import Folder
 from .forms import ReportForm
-from .forms import deleteReportForm
+from .forms import deleteReportForm 
 from .forms import FolderForm
-from django.config.auth.models import UserProfile
+from auth.models import UserProfile
 from itertools import chain
+
 
 from django.db.models import Q
 #from .forms import EditReportForm
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, get_object_or_404
+
 
 # Create your views here.
 
@@ -239,8 +241,7 @@ def create(request):
                     except User.DoesNotExist:
                         u=None
                     if u!= None:
-                        if sameGroup(request.user, u):
-                            rep.shared_users.add(u)
+                        rep.shared_users.add(u)
                 success = "Report has been saved!"
                 return render( request, 'report_create.html', {
                 'form': form,
@@ -344,28 +345,11 @@ def reportedit(request, report_pk):
         userstring += x.username
         userstring += ","
     userstring = userstring[:-1]
-    form = ReportForm({'report_name': r.report_name })
-    fdict = {'folder_name': f.folder_name, 'private': f.private, 'shared_user_field': userstring}
-
-
-
-    f1n = "None"
-    f2n = "None"
-    f3n = "None"
-    if(r.f1n!= None):
-        f1n = r.f1n;
-    if (r.f2n != None):
-        f2n = r.f2n;
-    if (r.f3n != None):
-        f3n = r.f3n;
-    print("FILE1:" + f1n  + " asdfdsa" + f1n)
+    form = ReportForm({'report_name': r.report_name,'date': r.date, 'sdesc': r.sdesc, 'ldesc': r.ldesc, 'private': r.private, 'shared_users': userstring})
     return render(request, 'report_edit.html', {
         'readonly': readonly,
         'report': r,
         'form': form,
-        'f1n': f1n,
-        'f2n': f2n,
-        'f3n': f3n,
     })
 
 def addreport(request, folder_pk, report_pk):

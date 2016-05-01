@@ -26,10 +26,7 @@ class Report(models.Model):
     sdesc = models.CharField(max_length=60, blank=False, null=False)
     ldesc = models.CharField(max_length=1000, blank=False, null=False)
     private = models.BooleanField(default=False)
-
-    shared_users = models.ManyToManyField(User)
-
-
+    shared_users = models.ManyToManyField(User, related_name='shared_users')
     f1n = models.CharField(default="",max_length=50, blank=True, null=True)
     file_1 = models.FileField(upload_to='documents', blank=True, null=True)
     encrypt_1 = models.BooleanField(default=False)
@@ -46,6 +43,8 @@ class Report(models.Model):
 
     def __str__(self):
         return self.report_name
+
+
 
 
 
