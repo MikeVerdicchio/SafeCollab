@@ -3,7 +3,7 @@ from django.forms.models import model_to_dict
 from .models import Report
 from .models import Folder
 from .forms import ReportForm
-from .forms import deleteReportForm 
+from .forms import deleteReportForm
 from .forms import FolderForm
 from auth.models import UserProfile
 from itertools import chain
@@ -11,7 +11,7 @@ from itertools import chain
 
 from django.db.models import Q
 #from .forms import EditReportForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.shortcuts import render_to_response, get_object_or_404
 
 
@@ -167,10 +167,15 @@ def fcreate(request):
                 for z in shared_user_names:
                     try:
                         u = User.objects.get(username=z)
+                        g = None
                     except User.DoesNotExist:
                         u = None
+                        g = Group.objects.get(name=z)
                     if(u != None):
                         f.shared_users.add(u)
+                    if(g != None):
+                        for j in g.user_set.all():
+                            f.shared_users.add(j)
                 success = "Folder has been saved!"
             else:
                 failure = "Please use a unique folder name."
@@ -238,10 +243,15 @@ def create(request):
                 for z in shared_user_names:
                     try:
                         u = User.objects.get(username=z)
+                        g = None
                     except User.DoesNotExist:
-                        u=None
-                    if u!= None:
+                        u = None
+                        g = Group.objects.get(name=z)
+                    if (u != None):
                         rep.shared_users.add(u)
+                    if (g != None):
+                        for j in g.user_set.all():
+                            rep.shared_users.add(j)
                 success = "Report has been saved!"
                 return render( request, 'report_create.html', {
                 'form': form,
@@ -272,7 +282,7 @@ def manage(request):
     report_data = Report.objects.all()
     #if(current_user.site_manager == False):
     if UserProfile.objects.get(username=request.user).site_manager is False:
-        report_data = Report.objects.filter(Q(creator_id=current_user)|Q(private=False))
+        report_data = Report.objects.filter(Q(creator_id=current_user)|Q(private=False)|Q(shared_users=current_user))
     if request.method == "POST":
         for x in report_data[0:]:
             if x.creator == request.user or UserProfile.objects.get(username=request.user).site_manager is True:
@@ -305,12 +315,7 @@ def reportedit(request, report_pk):
                 encrypt1 = form.cleaned_data["encrypt_1"]
                 encrypt2 = form.cleaned_data["encrypt_2"]
                 encrypt3 = form.cleaned_data["encrypt_3"]
-                if encrypt1 != None:
-                    r.f1n = encrypt1.name
-                if(encrypt2 != None):
-                    r.f2n = encrypt2.name
-                if(encrypt3 != None):
-                    r.f3n = encrypt3.name
+
                 r.report_name = report_name
                 r.date = date
                 r.sdesc = sdesc
@@ -345,7 +350,7 @@ def reportedit(request, report_pk):
         userstring += x.username
         userstring += ","
     userstring = userstring[:-1]
-    form = ReportForm({'report_name': r.report_name,'date': r.date, 'sdesc': r.sdesc, 'ldesc': r.ldesc, 'private': r.private, 'shared_users': userstring})
+    form = ReportForm({'report_name': r.report_name,'date': r.date, 'sdesc': r.sdesc, 'ldesc': r.ldesc, 'private': r.private, 'shared_user_field': userstring})
     return render(request, 'report_edit.html', {
         'readonly': readonly,
         'report': r,
