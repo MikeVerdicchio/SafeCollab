@@ -28,13 +28,6 @@
                 <h3><strong><font color="red">{{ failure }}</font></strong></h3>
                 <div class="contact-form">
                     <form role="form" method="post" enctype="multipart/form-data">
-                        File Slot One:
-                        {{ f1n }}<br>
-                        <file  src="/media/Homework.txt" />
-                        File Slot Two:
-                        {{f2n}} <br>
-                        File Slot Three:
-                        {{f3n}}<br>
                         {% csrf_token %}
                         <div class="row">
                             {% for field in form %}
