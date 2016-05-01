@@ -26,6 +26,7 @@ class Report(models.Model):
     sdesc = models.CharField(max_length=60, blank=False, null=False)
     ldesc = models.CharField(max_length=1000, blank=False, null=False)
     private = models.BooleanField(default=False)
+<<<<<<< HEAD
     shared_users = models.ManyToManyField(User, related_name='shared_users')
     f1n = models.CharField(default="",max_length=50, blank=True, null=True)
     file_1 = models.FileField(upload_to='documents', blank=True, null=True)
@@ -36,14 +37,24 @@ class Report(models.Model):
     f3n = models.CharField(default="",max_length=50, blank=True, null=True)
     file_3 = models.FileField(upload_to='documents', blank=True, null=True)
     encrypt_3 = models.BooleanField(default=False)
+=======
+>>>>>>> ec90f0290b965158e60f81c4f390487a7ec1f76c
     delete_report = models.BooleanField(default=False)
     uniqueid = models.CharField(default=uuid.uuid4, unique=True, max_length=100, null=True, blank=True)
     folder = models.ForeignKey(Folder, related_name='Folder', blank=True, null=True)
+    location = models.CharField(default="", max_length=200, blank=True, null=True)
 
 
     def __str__(self):
         return self.report_name
 
+class Documents(models.Model):
+    #fn = models.CharField(max_length=50, default='Unnamed', unique=True)
+    docfile = models.FileField(upload_to='documents', blank=True, null=True)
+    encrypt = models.BooleanField(default=False)
+    shared_users = models.ManyToManyField(User)
+    report = models.ForeignKey(Report, related_name='report')
+    private = models.BooleanField(default=False)
 
 
 
