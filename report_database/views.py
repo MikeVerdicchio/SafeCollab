@@ -65,8 +65,15 @@ def fedit(request, folder_pk):
                         u = User.objects.get(username=z)
                     except User.DoesNotExist:
                         u = None
+                        try:
+                            g = Group.objects.get(name=z)
+                        except Group.DoesNotExist:
+                            g = None
                     if (u != None):
                         f.shared_users.add(u)
+                    if (g != None):
+                        for j in g.user_set.all():
+                            f.shared_users.add(j)
                 f.folder_name = folder_name
                 f.private = private
                 f.save()
@@ -179,7 +186,10 @@ def fcreate(request):
                         g = None
                     except User.DoesNotExist:
                         u = None
-                        g = Group.objects.get(name=z)
+                        try:
+                            g = Group.objects.get(name=z)
+                        except Group.DoesNotExist:
+                            g = None
                     if(u != None):
                         f.shared_users.add(u)
                     if(g != None):
@@ -219,13 +229,6 @@ def create(request):
             sdesc = form.cleaned_data["sdesc"]
             ldesc = form.cleaned_data['ldesc']
             priv = form.cleaned_data["private"]
-
-            # file1 = form.cleaned_data["file_1"]
-            # file2 = form.cleaned_data["file_2"]
-            # file3 = form.cleaned_data["file_3"]
-            encrypt1 = form.cleaned_data["encrypt_1"]
-            encrypt2 = form.cleaned_data["encrypt_2"]
-            encrypt3 = form.cleaned_data["encrypt_3"]
             shared_user_field = form.cleaned_data["shared_user_field"]
             shared_user_names = [x.strip() for x in shared_user_field.split(',')]
             unique = True
@@ -252,7 +255,10 @@ def create(request):
                         g = None
                     except User.DoesNotExist:
                         u = None
-                        g = Group.objects.get(name=z)
+                        try:
+                            g = Group.objects.get(name=z)
+                        except Group.DoesNotExist:
+                            g = None
                     if (u != None):
                         rep.shared_users.add(u)
                     if (g != None):
@@ -318,12 +324,7 @@ def reportedit(request, report_pk):
                 ldesc = form.cleaned_data['ldesc']
                 priv = form.cleaned_data["private"]
 
-                # file1 = form.cleaned_data["file_1"]
-                # file2 = form.cleaned_data["file_2"]
-                # file3 = form.cleaned_data["file_3"]
-                encrypt1 = form.cleaned_data["encrypt_1"]
-                encrypt2 = form.cleaned_data["encrypt_2"]
-                encrypt3 = form.cleaned_data["encrypt_3"]
+
 
 
                 r.report_name = report_name

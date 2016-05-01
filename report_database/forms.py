@@ -10,17 +10,8 @@ class ReportForm(forms.Form):
     sdesc = forms.CharField(label='Short Description*', max_length=60)
     ldesc = forms.CharField(label=(u"Long Description*"), widget=forms.Textarea(attrs={'rows': '10', 'cols':'30'}), max_length=1000)
     private = forms.BooleanField(label='Private', required=False)
-<<<<<<< HEAD
-    file_1 = forms.FileField(label='File 1', required=False)
-    encrypt_1 = forms.BooleanField(label='Encrypt File 1', required=False)
-    file_2 = forms.FileField(label='File 2', required=False)
-    encrypt_2 = forms.BooleanField(label='Encrypt File 2', required=False)
-    file_3 = forms.FileField(label='File 3', required=False)
-    encrypt_3 = forms.BooleanField(label='Encrypt File 3', required=False)
     shared_user_field = forms.CharField(label='Users Given Access (Seperate by Commas)', max_length=1000,
                                         required=False)
-=======
->>>>>>> ec90f0290b965158e60f81c4f390487a7ec1f76c
 
 class FolderForm(forms.Form):
     folder_name = forms.CharField(label='Folder Name*', max_length=50)
