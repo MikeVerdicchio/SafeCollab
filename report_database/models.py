@@ -26,6 +26,7 @@ class Report(models.Model):
     sdesc = models.CharField(max_length=60, blank=False, null=False)
     ldesc = models.CharField(max_length=1000, blank=False, null=False)
     private = models.BooleanField(default=False)
+    shared_users = models.ManyToManyField(User, related_name='shared_users')
     delete_report = models.BooleanField(default=False)
     uniqueid = models.CharField(default=uuid.uuid4, unique=True, max_length=100, null=True, blank=True)
     folder = models.ForeignKey(Folder, related_name='Folder', blank=True, null=True)
@@ -42,5 +43,7 @@ class Documents(models.Model):
     shared_users = models.ManyToManyField(User)
     report = models.ForeignKey(Report, related_name='report')
     private = models.BooleanField(default=False)
+
+
 
 

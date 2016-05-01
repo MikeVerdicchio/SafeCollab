@@ -10,10 +10,12 @@ class ReportForm(forms.Form):
     sdesc = forms.CharField(label='Short Description*', max_length=60)
     ldesc = forms.CharField(label=(u"Long Description*"), widget=forms.Textarea(attrs={'rows': '10', 'cols':'30'}), max_length=1000)
     private = forms.BooleanField(label='Private', required=False)
+    shared_user_field = forms.CharField(label='Users Given Access (Seperate by Commas)', max_length=1000,
+                                        required=False)
 
 class FolderForm(forms.Form):
     folder_name = forms.CharField(label='Folder Name*', max_length=50)
-    shared_user_field = forms.CharField(label='Users Given Access (Seperate by Commas)', max_length=1000, required=False)
+    shared_user_field = forms.CharField(label='Users or Groups Given Access (Seperate by Commas)', max_length=1000, required=False)
     private = forms.BooleanField(label='Private', required=False)
 
 class DocumentForm(forms.Form):

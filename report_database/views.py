@@ -9,15 +9,21 @@ from .forms import FolderForm
 from .forms import DocumentForm
 from auth.models import UserProfile
 from itertools import chain
+
+
+
+
 # from googlemaps import GoogleMaps
 # from django.contrib.gis.utils import GeoIP
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
+
 from django.db.models import Q
 #from .forms import EditReportForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.shortcuts import render_to_response, get_object_or_404
+
 
 # Create your views here.
 def index(request):
@@ -59,8 +65,15 @@ def fedit(request, folder_pk):
                         u = User.objects.get(username=z)
                     except User.DoesNotExist:
                         u = None
+                        try:
+                            g = Group.objects.get(name=z)
+                        except Group.DoesNotExist:
+                            g = None
                     if (u != None):
                         f.shared_users.add(u)
+                    if (g != None):
+                        for j in g.user_set.all():
+                            f.shared_users.add(j)
                 f.folder_name = folder_name
                 f.private = private
                 f.save()
@@ -170,10 +183,18 @@ def fcreate(request):
                 for z in shared_user_names:
                     try:
                         u = User.objects.get(username=z)
+                        g = None
                     except User.DoesNotExist:
                         u = None
+                        try:
+                            g = Group.objects.get(name=z)
+                        except Group.DoesNotExist:
+                            g = None
                     if(u != None):
                         f.shared_users.add(u)
+                    if(g != None):
+                        for j in g.user_set.all():
+                            f.shared_users.add(j)
                 success = "Folder has been saved!"
             else:
                 failure = "Please use a unique folder name."
@@ -184,6 +205,13 @@ def fcreate(request):
         'form': form,
         'failure': failure,
     })
+
+def sameGroup(User1, User2):
+    g = Group.objects.all()
+    for x in g:
+        if (User1 in g.user_set) and (User2 in g.user_set):
+            return True
+    return False
 
 def create(request):
     if request.method == "GET":
@@ -201,12 +229,16 @@ def create(request):
             sdesc = form.cleaned_data["sdesc"]
             ldesc = form.cleaned_data['ldesc']
             priv = form.cleaned_data["private"]
+            shared_user_field = form.cleaned_data["shared_user_field"]
+            shared_user_names = [x.strip() for x in shared_user_field.split(',')]
+            unique = True
 
 #            user_ip =
 #             g = GeoIP()
 #             lat, long = g.lon_lat(user_ip)
 #             gmaps = GoogleMaps(api_key)
 #             destination = gmaps.latlng_to_address(lat, long)
+
 
 
             report_data = Report.objects.all()
@@ -217,6 +249,21 @@ def create(request):
             if unique:
                 rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv)
                 rep.save()
+                for z in shared_user_names:
+                    try:
+                        u = User.objects.get(username=z)
+                        g = None
+                    except User.DoesNotExist:
+                        u = None
+                        try:
+                            g = Group.objects.get(name=z)
+                        except Group.DoesNotExist:
+                            g = None
+                    if (u != None):
+                        rep.shared_users.add(u)
+                    if (g != None):
+                        for j in g.user_set.all():
+                            rep.shared_users.add(j)
                 success = "Report has been saved!"
                 return render( request, 'report_create.html', {
                 'form': form,
@@ -247,7 +294,8 @@ def manage(request):
     report_data = Report.objects.all()
     #if(current_user.site_manager == False):
     if UserProfile.objects.get(username=request.user).site_manager is False:
-        report_data = Report.objects.filter(Q(creator_id=current_user))
+
+        report_data = Report.objects.filter(Q(creator_id=current_user)|Q(private=False)|Q(shared_users=current_user))
 
     if request.method == "POST":
         for x in report_data[0:]:
@@ -275,6 +323,10 @@ def reportedit(request, report_pk):
                 sdesc = form.cleaned_data["sdesc"]
                 ldesc = form.cleaned_data['ldesc']
                 priv = form.cleaned_data["private"]
+
+
+
+
                 r.report_name = report_name
                 r.date = date
                 r.sdesc = sdesc
@@ -299,12 +351,17 @@ def reportedit(request, report_pk):
         readonly = 'READ ONLY'
     form = ReportForm(model_to_dict(r))
 
-
+    userstring = ""
+    for x in r.shared_users.all():
+        print(x.username)
+        userstring += x.username
+        userstring += ","
+    userstring = userstring[:-1]
+    form = ReportForm({'report_name': r.report_name,'date': r.date, 'sdesc': r.sdesc, 'ldesc': r.ldesc, 'private': r.private, 'shared_user_field': userstring})
     return render(request, 'report_edit.html', {
         'readonly': readonly,
         'report': r,
         'form': form,
-
     })
 
 def addreport(request, folder_pk, report_pk):
@@ -323,7 +380,7 @@ def listfiles(request, report_pk):
             newdoc = Documents(docfile=file, encrypt=encrypt, private=private, report=t)
             newdoc.save()
             if t.folder:
-                u = Folders.objects.get(t.folder.pk)
+                u = Folder.objects.get(t.folder.pk)
                 for i in u.shared_users:
                     newdoc.shared_users.add(i)
             else:
