@@ -22,14 +22,27 @@
 {% block body %}
 <body>
 <!-- List of uploaded documents -->
-{% if documents %}
+{% if pubdoc %}
+    <p><b>These are your non encrypted files. Click filename to view and Click Download to download file</b></p>
     <ul>
-    {% for document in documents %}
+    {% for document in pubdoc %}
         <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
+	    <a href="{{ document.docfile.url}}" download="">Download</a>
     {% endfor %}
     </ul>
     {% else %}
-        <p>No files in report.</p>
+        <p><b>No non-encrypted files in report.</b></p>
+{% endif %}
+{% if encdoc %}
+    <p><b>These are your encrypted files, you can only download and view them through the FDA</b></p>
+    <ul>
+    {% for doc in encdoc %}
+        <li>{{ doc.docfile.name }}</li>
+
+    {% endfor %}
+    </ul>
+    {% else %}
+        <p><b>No encrypted files in report.</b></p>
 {% endif %}
 
     <!-- Upload form. Note enctype attribute! -->

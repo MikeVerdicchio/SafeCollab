@@ -334,10 +334,18 @@ def listfiles(request, report_pk):
         form = DocumentForm()
 
     documents = Documents.objects.all().filter(report=t)
+    pubdoc = []
+    encdoc = []
+
+    for i in documents:
+        if i.encrypt:
+            encdoc.append(i)
+        else:
+            pubdoc.append(i)
 
     return render(request,
             'files.html',
-            {'documents': documents, 'form': form}
+            {'pubdoc': pubdoc, 'encdoc':encdoc, 'form': form}
     )
 
 
