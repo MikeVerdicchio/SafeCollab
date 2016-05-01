@@ -7,6 +7,8 @@ from .forms import deleteReportForm
 from .forms import FolderForm
 from auth.models import UserProfile
 from itertools import chain
+# from googlemaps import GoogleMaps
+# from django.contrib.gis.utils import GeoIP
 
 from django.db.models import Q
 #from .forms import EditReportForm
@@ -14,7 +16,6 @@ from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, get_object_or_404
 
 # Create your views here.
-
 def index(request):
     return render(request, 'report_home.html')
 
@@ -203,8 +204,11 @@ def create(request):
             encrypt2 = form.cleaned_data["encrypt_2"]
             encrypt3 = form.cleaned_data["encrypt_3"]
 
-
-
+#            user_ip =
+#             g = GeoIP()
+#             lat, long = g.lon_lat(user_ip)
+#             gmaps = GoogleMaps(api_key)
+#             destination = gmaps.latlng_to_address(lat, long)
 
 
             report_data = Report.objects.all()
@@ -257,7 +261,8 @@ def manage(request):
     report_data = Report.objects.all()
     #if(current_user.site_manager == False):
     if UserProfile.objects.get(username=request.user).site_manager is False:
-        report_data = Report.objects.filter(Q(creator_id=current_user)|Q(private=False))
+        report_data = Report.objects.filter(Q(creator_id=current_user))
+
     if request.method == "POST":
         for x in report_data[0:]:
             if x.creator == request.user or UserProfile.objects.get(username=request.user).site_manager is True:

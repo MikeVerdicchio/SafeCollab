@@ -38,6 +38,7 @@ class Report(models.Model):
     delete_report = models.BooleanField(default=False)
     uniqueid = models.CharField(default=uuid.uuid4, unique=True, max_length=100, null=True, blank=True)
     folder = models.ForeignKey(Folder, related_name='Folder', blank=True, null=True)
+    location = models.CharField(default="", max_length=200, blank=True, null=True)
 
 
     def __str__(self):
