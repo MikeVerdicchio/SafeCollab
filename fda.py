@@ -49,122 +49,13 @@ def encrypt2(filename, key):
     return False
 
 
-def decrypt(ref, key):
-    page = urllib.request.urlopen(ref)
-    document = str(input("Please enter the name you want the decrypted file to be written into"))
-    f = open(document, "w")
-    content = page.read()
-    dec = ARC4.new(key)
-    f.write(str(dec.decrypt(content)))
-    f.close()
-    return True
-
-
-def login():
-    global authorized
-    userN = input("Please enter your login username: ")
-    passW = input("Please enter your password: ")
-
-    user = authenticate(username=userN, password=passW)
-    if user is not None:
-        if user.is_active:
-            authorized = True
-    else:
-        authorized = False
-
-    if not authorized:
-        print("You have not entered a valid username and password")
-        sys.exit()
-    files = []
-
-    alldocs = report_database.models.Documents.objects.all()
-
-    if (auth.models.UserProfile.objects.get(username=userN).site_manager):
-        for i in alldocs[0:]:
-            files.append((i.docfile, i.encrypt))
-    else:
-        for i in alldocs[0:]:
-            if not i.private:
-                files.append((i.docfile, i.encrypt))
-            else:
-                sharedUsers = User.objects.filter(documents=i.pk)
-                print("in one file %s" % i.docfile)
-                for t in sharedUsers:
-                    # print("inside shared user check")
-                    print(t)
-                    if str(userN) == str(t):
-                        # print("this is true~")
-                        files.append((i.docfile, i.encrypt))
-
-    print("\nHere are your files:\n")
-    index = 1
-    for i in files:
-        print("file %s : %s" % (index, i[0]))
-        index += 1
-
-    print("\nPlease enter one of the following commands: ")
-    print("exit -> this command exits out of the FDA")
-    print("download (file number) -> this command downloads file and decrypts it if it is encrypted")
-    print("encrypt1 (path to file) -> this command encrypts a file in any location")
-    print("encrypt2 (file name) -> this command encrypts a file located in current directory\n")
-
-    ###going to download reports###
-    while True:
-        text = input()
-        if text == "exit":
-            break
-
-        words = text.split()
-        if not len(words) is 2 and not len(words) is 0:
-            print("You have not entered a valid command")
-        else:
-            if words[0] == "download":
-                # print("download")
-
-                if files[int(words[1]) - 1][1]:
-                    print("This files is encrypted")
-                    key = input("Please enter key to decrypt: ")
-                    ref = "http://127.0.0.1:8000/media/" + str(files[int(words[1]) - 1][0])
-                    # for heroku
-                    # ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
-                    if not decrypt(ref, key):
-                        print("Your key is not correct")
-                    else:
-                        print("You have successfully downloaded file %s" % words[1])
-
-                else:
-                    ref = "http://127.0.0.1:8000/media/" + str(files[int(words[1]) - 1][0])
-                    # print(ref)
-                    # for heroku
-                    # ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
-                    download = str(files[int(words[1]) - 1][0])
-                    # print(download)
-                    urllib.request.urlretrieve(ref, download[10:])
-                    print("You have downloaded file %s" % words[1])
-            elif words[0] == "encrypt1":
-                # print("encrypt1")
-                key = input("Please enter key to encrypt: ")
-                if not encrypt1(words[1], key):
-                    print("You have not entered a valid file")
-                else:
-                    print("Encryption successful! You're file is in the current directory.")
-            elif words[0] == "encrypt2":
-                # print("encrypt2")
-                key = input("Please enter key to encrypt: ")
-                if not encrypt2(words[1], key):
-                    print("You have not enetered a valid file")
-                else:
-                    print("Encryption successful! You're file is in the current directory.")
-            else:
-                print("You have not entered a valid command")
-
-
 def login2():
     global authorized
     userN = input("Please enter your login username: ")
     passW = input("Please enter your password: ")
     url = 'https://agile-earth-28935.herokuapp.com/login/'
     urlcheck = 'http://agile-earth-28935.herokuapp.com/reports/manage/'
+    global client
     client = requests.session()
     client.get(url)
     token = client.cookies['csrftoken']
@@ -202,11 +93,11 @@ def login2():
         report_links.append(link)
 
 
-    # for i in reports[0:]:
+        # for i in reports[0:]:
         # if not i.private:
         #     user_reports.append(i.report_name)
         #     sharedUsers = User.objects.filter(report=i.pk)
-            # print("name: %s" % i.report_name)
+        # print("name: %s" % i.report_name)
         # if (str(i.creator) == str(userN)):
         #     user_reports.append(i.report_name)
         # for t in sharedUsers:
@@ -224,7 +115,9 @@ def login2():
 
     print("\nPlease enter one of the following commands: ")
     print("exit -> this command exits out of the FDA")
-    print("enter (report number) -> this command enters the report and lists all the files\n")
+    print("enter (report number) -> this command enters the report and lists all the files")
+    print("encrypt1 (path to file) -> this command encrypts a file in any location")
+    print("encrypt2 (file name) -> this command encrypts a file located in current directory\n")
 
     while (True):
         text = input()
@@ -236,43 +129,68 @@ def login2():
             print("You have not entered a valid command or valid arguments")
         else:
             if words[0] == "enter":
-                if int(words[1]) > 0 and int(words[1]) <= len(user_reports):
-                    filesrequest = client.get(report_links[int(words[1])-1])
+                if int(words[1]) > 0 and int(words[1]) <= len(report_names):
+                    unencrypted = []
+                    encrypted = []
+                    filesrequest = client.get(report_links[int(words[1]) - 1])
                     soup = BeautifulSoup(filesrequest.text, "html.parser")
-                    ul = soup.find("ul")
+                    try:
+                        x = soup.find(id="unencrypted")
+                        for li in x.find_all('li'):
+                            for a in li.find_all('a'):
+                                unencrypted.append('https://agile-earth-28935.herokuapp.com' + a.get('href'))
+                    except:
+                        print("Woops! There are no unencrypted files.")
 
+                    try:
+                        x = soup.find(id="encrypted")
+                        for li in x.find_all('li'):
+                            encrypted.append('https://agile-earth-28935.herokuapp.com' + '/media/' + li.get_text())
+                    except:
+                        print("Woops! There are no encrypted files.")
 
-
-
-
-
-                    reportN = user_reports[int(words[1]) - 1]  # gets report name
-                    rep = report_database.models.Report.objects.get(report_name=reportN)
-                    file_list = report_database.models.Documents.objects.filter(report=rep)
-                    listfiles(file_list)
+                    if unencrypted == [] and encrypted == []:
+                        print("There are no files!")
+                    else:
+                        listfiles(unencrypted, encrypted)
                 else:
-                    print("You have not enetered a valid report number")
+                    print("You have not entered a valid report number")
+            elif words[0] == "encrypt1":
+                # print("encrypt1")
+                key = input("Please enter key to encrypt: ")
+                if not encrypt1(words[1], key):
+                    print("You have not entered a valid file")
+                else:
+                    print("Encryption successful! You're file is in the current directory.")
+            elif words[0] == "encrypt2":
+                # print("encrypt2")
+                key = input("Please enter key to encrypt: ")
+                if not encrypt2(words[1], key):
+                    print("You have not enetered a valid file")
+                else:
+                    print("Encryption successful! You're file is in the current directory.")
             else:
                 print("You have not entered a valid command or valid arguments")
 
 
-def listfiles(file_list):
-    files = []
-
-    for i in file_list:
-        files.append((i.docfile, i.encrypt))
-
-    print("\nHere are your files:\n")
+def listfiles(unencrypted, encrypted):
+    print("\nHere are your unencrypted files:\n")
     index = 1
-    for i in files:
-        print("file %s : %s" % (index, i[0]))
+    cutoff = 0
+    for i in unencrypted:
+        print("file %s : %s" % (index, i))
+        index += 1
+    cutoff = index
+    print("\nHere are your encrypted files:\n")
+    for i in encrypted:
+        print("file %s : %s" % (index, i))
         index += 1
 
     print("\nPlease enter one of the following commands: ")
     print("return -> this command returns to the list of reports")
     print("download (file number) -> this command downloads file and decrypts it if it is encrypted")
-    print("encrypt1 (path to file) -> this command encrypts a file in any location")
-    print("encrypt2 (file name) -> this command encrypts a file located in current directory\n")
+    #print("encrypt1 (path to file) -> this command encrypts a file in any location")
+    #print("encrypt2 (file name) -> this command encrypts a file located in current directory\n")
 
     ###going to download reports###
     while True:
@@ -288,40 +206,36 @@ def listfiles(file_list):
             if words[0] == "download":
                 # print("download")
 
-                if files[int(words[1]) - 1][1]:
+                if int(words[1]) >= cutoff:
                     print("This files is encrypted")
                     key = input("Please enter key to decrypt: ")
                     # ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
                     # for heroku
-                    ref = "https://agile-earth-28935.herokuapp.com/" + str(files[int(words[1]) - 1][0])
-                    if not decrypt(ref, key):
-                        print("Your key is not correct")
-                    else:
-                        print("You have successfully downloaded file %s" % words[1])
+                    ref = encrypted[int(words[1]) - cutoff]
+                    print(ref)
+                    page = client.get(ref)
+                    document = str(input("Please enter the name you want the decrypted file to be written into: "))
+                    dec = ARC4.new(key)
+                    with open(document, 'wb') as f:
+                        for chunk in page.iter_content(chunk_size=512):
+                            f.write(dec.decrypt(chunk))
+                    print("You have successfully downloaded file %s" % words[1])
 
                 else:
                     # ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
                     # print(ref)
                     # for heroku
-                    ref = "https://agile-earth-28935.herokuapp.com/" + str(files[int(words[1]) - 1][0])
-                    download = str(files[int(words[1]) - 1][0])
+                    ref = unencrypted[int(words[1]) - 1]
+                    download = "Download"
                     # print(download)
-                    urllib.request.urlretrieve(ref, download[10:])
+                    file = client.get(ref)
+                    new = ref.split("/")
+                    name = new[5]
+                    with open(name, 'wb') as f:
+                        for chunk in file.iter_content(chunk_size=512):
+                            f.write(chunk)
+                    # urllib.request.urlretrieve(ref, download)
                     print("You have downloaded file %s" % words[1])
-            elif words[0] == "encrypt1":
-                # print("encrypt1")
-                key = input("Please enter key to encrypt: ")
-                if not encrypt1(words[1], key):
-                    print("You have not entered a valid file")
-                else:
-                    print("Encryption successful! You're file is in the current directory.")
-            elif words[0] == "encrypt2":
-                # print("encrypt2")
-                key = input("Please enter key to encrypt: ")
-                if not encrypt2(words[1], key):
-                    print("You have not enetered a valid file")
-                else:
-                    print("Encryption successful! You're file is in the current directory.")
             else:
                 print("You have not entered a valid command")
     return True
