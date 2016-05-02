@@ -28,7 +28,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, primary_key=True)
     username = models.CharField(max_length=128, default='')
     site_manager = models.BooleanField(default=False)
-    public_key = models.CharField(max_length=1000, default='')
+    public_key = models.CharField(max_length=10000, default='')
     security_question = models.CharField(max_length=128, default='')
 
     # def username(self):

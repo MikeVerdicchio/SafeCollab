@@ -8,3 +8,4 @@ django-tables2==1.1.6
 whitenoise==3.0
 django-eztables==0.3.2
 django_extensions==1.6.1
+pygeoip==0.3.2

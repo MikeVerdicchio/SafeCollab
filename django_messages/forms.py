@@ -13,6 +13,7 @@ else:
 from django_messages.models import Message
 from django_messages.fields import CommaSeparatedUserField
 from django.core.exceptions import ValidationError
+import os
 
 class ComposeForm(forms.Form):
     """
@@ -42,11 +43,19 @@ class ComposeForm(forms.Form):
         encrypt_message = (b'',)
         for r in recipients:
             if encrypt is True:
+                filename = os.getcwd()+'/django_messages/key2.pem'
                 key = UserProfile.objects.get(username__exact=r).public_key
+                f = open(filename,'w+')
+                f.write(key)
+                f.close()
+                f = open(filename, 'r')
                 try:
                     importkey = RSA.importKey(key)
                 except ValueError:
                     print("Incorrect password")
+                f.close()
+                f = open(filename, 'w+')
+                f.close()
                 encrypt_message = importkey.encrypt(body.encode('utf-8'), 32)
                 body = encrypt_message
             msg = Message(

@@ -85,9 +85,10 @@ def login():
                 files.append((i.docfile, i.encrypt))
             else:
                 sharedUsers = User.objects.filter(documents=i.pk)
+                print("in one file %s" % i.docfile)
                 for t in sharedUsers:
                     #print("inside shared user check")
-                    #print(t)
+                    print(t)
                     if str(userN) == str(t):
                         #print("this is true~")
                         files.append((i.docfile, i.encrypt))

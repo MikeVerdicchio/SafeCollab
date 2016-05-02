@@ -165,9 +165,11 @@ def show_group(request, name):
 
 def create_group(request):
     users = User.objects.all()
+    users = users.exclude(username=request.user)
     if request.method == "POST":
         name = request.POST.get('group')
         newgroup = Group.objects.create(name=name)
+        newgroup.user_set.add(User.objects.get(username=request.user))
         add = request.POST.getlist('add')
         for x in add:
             user = User.objects.get(username=x)
