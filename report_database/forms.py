@@ -12,6 +12,7 @@ class ReportForm(forms.Form):
     private = forms.BooleanField(label='Private', required=False)
     shared_user_field = forms.CharField(label='Users Given Access (Seperate by Commas)', max_length=1000,
                                         required=False)
+    location = forms.CharField(label='Location', max_length=200)
 
 class FolderForm(forms.Form):
     folder_name = forms.CharField(label='Folder Name*', max_length=50)

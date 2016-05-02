@@ -9,21 +9,17 @@ from .forms import FolderForm
 from .forms import DocumentForm
 from auth.models import UserProfile
 from itertools import chain
-
-
-
-
 # from googlemaps import GoogleMaps
 # from django.contrib.gis.utils import GeoIP
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
-
+import pygeoip
 from django.db.models import Q
 #from .forms import EditReportForm
 from django.contrib.auth.models import User, Group
+import os
 from django.shortcuts import render_to_response, get_object_or_404
-
 
 # Create your views here.
 def index(request):
@@ -220,7 +216,7 @@ def create(request):
         return render( request, 'report_create.html', page_data )
     elif request.method == "POST":
         cid = request.user.id
-        form = ReportForm( request.POST , request.FILES)
+        form = ReportForm(request.POST, request.FILES)
         success = ""
         failure = ""
         if form.is_valid():
@@ -233,13 +229,16 @@ def create(request):
             shared_user_names = [x.strip() for x in shared_user_field.split(',')]
             unique = True
 
-#            user_ip =
-#             g = GeoIP()
-#             lat, long = g.lon_lat(user_ip)
-#             gmaps = GoogleMaps(api_key)
-#             destination = gmaps.latlng_to_address(lat, long)
-
-
+            gi = pygeoip.GeoIP(os.getcwd()+'/report_database/GeoLiteCity.dat')
+            user_ip = request.META.get('REMOTE_ADDR', None)
+            location = gi.record_by_addr(user_ip)
+            if location is not None:
+                location = "Charlottesville, VA"
+            else:
+                try:
+                    location = location.get('city') + ', ' + location.get('country')
+                except:
+                    location = "Charlottesville, VA"
 
             report_data = Report.objects.all()
             unique = True
@@ -247,7 +246,7 @@ def create(request):
             #     if x.report_name == report_name:
             #         unique = False
             if unique:
-                rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv)
+                rep = Report(creator_id=cid, report_name=report_name, date=date, sdesc=sdesc, ldesc=ldesc, private=priv, location=location)
                 rep.save()
                 for z in shared_user_names:
                     try:
