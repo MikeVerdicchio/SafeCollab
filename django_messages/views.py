@@ -231,8 +231,6 @@ def view(request, message_id, form_class=ComposeForm, quote_helper=format_quote,
     user = message.sender
     body = quote_helper(message.sender, message.body)
     if user is not None and message.decrypt_pw is not None:
-        # filename = os.getcwd()+'/auth/key.pem'
-        # f = open(filename,'r+')
         filename = os.getcwd()+'/django_messages/key2.pem'
         f = open(filename,'w+')
         f.write(message.decrypt_pw[:31] + message.decrypt_pw[31:-29].replace(" ", "\n") + message.decrypt_pw[-29:])
@@ -242,8 +240,6 @@ def view(request, message_id, form_class=ComposeForm, quote_helper=format_quote,
         f = open(filename, 'w+')
         f.close()
         body = memoryview(message.encrypt_message).tobytes()
-        print(importkey.publickey().exportKey())
-        print(UserProfile.objects.get(username__exact=message.recipient).public_key)
         body = importkey.decrypt(body)
         body = body.decode('utf-8', "ignore")
         message.body = body
