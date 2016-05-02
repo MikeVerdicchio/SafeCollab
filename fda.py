@@ -267,19 +267,19 @@ def listfiles(file_list):
                 if files[int(words[1])-1][1]:
                     print("This files is encrypted")
                     key = input("Please enter key to decrypt: ")
-                    ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
+                    #ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
                     #for heroku
-                    #ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
+                    ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
                     if not decrypt(ref, key):
                         print("Your key is not correct")
                     else:
                         print("You have successfully downloaded file %s" % words[1])
 
                 else:
-                    ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
+                    #ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
                     #print(ref)
                     #for heroku
-                    #ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
+                    ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
                     download = str(files[int(words[1])-1][0])
                     #print(download)
                     urllib.request.urlretrieve(ref, download[10:])
