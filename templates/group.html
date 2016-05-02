@@ -29,12 +29,19 @@
                 <thead>
                     <tr>
                         <td><strong>Group Name</strong></td>
+                        {% if user.userprofile.site_manager%}
+                        <td><strong>Delete Group</strong></td>
+                        {% endif %}
                     </tr>
+
                 </thead>
                 <tbody>
                 {% for Group in groups %}
                     <tr>
                         <td><a href="/groups/group_info/{{ Group.name }}">{{ Group.name }}</a></td>
+                    {% if user.userprofile.site_manager%}
+                        <td><input type="checkbox" name="remove" value={{ Group.name }}  ></td>
+                    {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

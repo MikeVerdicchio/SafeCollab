@@ -129,6 +129,12 @@ def list_users(request):
 
 def manage_group(request):
     groups = Group.objects.all()
+    if request.method == "POST":
+        remove = request.POST.getlist('remove')
+        for group in remove:
+            g = Group.objects.get(name=group)
+            for user in g.user_set.all():
+                g.user_set.remove(user)
     if request.user.userprofile.site_manager:
         groups = Group.objects.all()
     else:
@@ -156,7 +162,8 @@ def show_group(request, name):
     else:
         all_users = User.objects.all()
         for user in users:
-            all_users = all_users.exclude(username=user.username)
+            if str(user.username) is not str(request.user.username):
+                all_users = all_users.exclude(username=user.username)
     return render(request, 'group_info.html', {
         'users': users,
         'all_users': all_users,
