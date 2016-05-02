@@ -2,25 +2,6 @@
 {% block title %}Index{% endblock %}
 {% block table %}
 <body>
-
-<table style="width:100%">
-  <tr>
-    <td>Jill</td>
-    <td>Smith</td>
-    <td>50</td>
-  </tr>
-  <tr>
-    <td>Eve</td>
-    <td>Jackson</td>
-    <td>94</td>
-  </tr>
-  <tr>
-    <td>John</td>
-    <td>Doe</td>
-    <td>80</td>
-  </tr>
-</table>
-
 </body>
 {% endblock %}
 {% block body %}
@@ -35,7 +16,11 @@
                     <tr>
                         <td><strong>User Name</strong></td>
                         <td><strong>Site Manager Status</strong></td>
-                        <td><strong>Grant Site Manager Access</strong></td>
+                        {% if user.userprofile.super_manager %}
+                            <td><strong>Grant/Remove Site Manager Access</strong></td>
+                        {% else %}
+                            <td><strong>Grant Site Manager Access</strong></td>
+                        {% endif %}
                         <td><strong>Account Options</strong></td>
                         <td><strong>Activate/Deactivate</strong></td>
                     </tr>

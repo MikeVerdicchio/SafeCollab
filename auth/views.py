@@ -111,10 +111,19 @@ def list_users(request):
                 'users': users,
                 'form': SMForm()
             })
-        for x in sm:
-            u_p = UserProfile.objects.get(username=x)
-            u_p.site_manager = True
-            u_p.save()
+        if UserProfile.objects.get(username=request.user).super_manager:
+            for x in sm:
+                u_p = UserProfile.objects.get(username=x)
+                if u_p.site_manager:
+                    u_p.site_manager = False
+                else:
+                    u_p.site_manager = True
+                u_p.save()
+        else:
+            for x in sm:
+                u_p = UserProfile.objects.get(username=x)
+                u_p.site_manager = True
+                u_p.save()
         for y in activate:
             u_p = User.objects.get(username=y)
             status = u_p.is_active
