@@ -378,13 +378,20 @@ def listfiles(request, report_pk):
                 private=True
             newdoc = Documents(docfile=file, encrypt=encrypt, private=private, report=t)
             newdoc.save()
+
             if t.folder:
-                u = Folder.objects.get(t.folder.pk)
-                for i in u.shared_users:
+                u = Folder.objects.get(folder_name = t.folder.folder_name)
+                for i in u.shared_users.all():
+                #for i in report
                     newdoc.shared_users.add(i)
             else:
                 newdoc.shared_users.add(request.user)
+
+            for i in t.shared_users.all():
+                #if not (i in newdoc.shared_users.all()):
+                newdoc.shared_users.add(i)
             newdoc.save()
+
             return HttpResponseRedirect(reverse('report_database.views.listfiles',args=(report_pk,)))
     else:
         form = DocumentForm()
