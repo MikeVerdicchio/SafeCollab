@@ -90,7 +90,7 @@ def register_user(request):
                 if user is not None:
                     if user.is_active:
                         login(request, user)
-                        return homepage(request)
+                        return redirect('/reports/manage')
     else:
         form = RegisterForm()
 

@@ -24,7 +24,7 @@
 <!-- List of uploaded documents -->
 {% if pubdoc %}
     <p><b>These are your non encrypted files. Click filename to view and Click Download to download file</b></p>
-    <ul>
+    <ul id="unencrypted">
     {% for document in pubdoc %}
         <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
 	    <a href="{{ document.docfile.url}}" download="">Download</a>
@@ -35,7 +35,7 @@
 {% endif %}
 {% if encdoc %}
     <p><b>These are your encrypted files, you can only download and view them through the FDA</b></p>
-    <ul>
+    <ul id="encrypted">
     {% for doc in encdoc %}
         <li>{{ doc.docfile.name }}</li>
 

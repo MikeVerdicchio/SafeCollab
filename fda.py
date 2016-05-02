@@ -12,7 +12,7 @@ import report_database
 import urllib.request
 import auth
 import requests
-
+from bs4 import BeautifulSoup
 from Crypto.Cipher import ARC4
 from Crypto import Random
 
@@ -69,7 +69,6 @@ def login():
     if user is not None:
         if user.is_active:
             authorized = True
-
     else:
         authorized = False
 
@@ -164,12 +163,15 @@ def login2():
     global authorized
     userN = input("Please enter your login username: ")
     passW = input("Please enter your password: ")
-
-    user = authenticate(username=userN, password=passW)
-    if user is not None:
-        if user.is_active:
-            authorized = True
-
+    url = 'https://agile-earth-28935.herokuapp.com/login/'
+    urlcheck = 'http://agile-earth-28935.herokuapp.com/reports/manage/'
+    client = requests.session()
+    client.get(url)
+    token = client.cookies['csrftoken']
+    payload = {'username': userN, 'password': passW, 'csrfmiddlewaretoken': token}
+    loginrequest = client.post(url, data=payload, headers={'Referer': url})
+    if loginrequest.url == urlcheck:
+        authorized = True
     else:
         authorized = False
 
@@ -178,34 +180,45 @@ def login2():
         sys.exit()
     files = []
 
-    # alldocs = report_database.models.Documents.objects.all()
+    reportsrequest = client.get(urlcheck)
+    soup = BeautifulSoup(reportsrequest.text, "html.parser")
+    table = soup.find("table")
 
     reports = report_database.models.Report.objects.all()
+    # user_reports = []
+    report_names = []
+    report_links = []
 
-    user_reports = []
+    # if (auth.models.UserProfile.objects.get(username=userN).site_manager):
+    #     for i in reports[0:]:
+    #         user_reports.append(i.report_name)
+    # else:
+    for row in table.find_all("tr")[1:]:
+        for data in row.find_all("td")[1:2]:
+            report_name = data.get_text()
+        for links in row.find_all("a")[1:2]:
+            link = 'https://agile-earth-28935.herokuapp.com' + links.get('href')
+        report_names.append(report_name)
+        report_links.append(link)
 
-    if (auth.models.UserProfile.objects.get(username=userN).site_manager):
-        for i in reports[0:]:
-            user_reports.append(i.report_name)
-    else:
-        for i in reports[0:]:
-            if not i.private:
-                user_reports.append(i.report_name)
-            else:
-                sharedUsers = User.objects.filter(report=i.pk)
-                # print("name: %s" % i.report_name)
-                if (str(i.creator) == str(userN)):
-                    user_reports.append(i.report_name)
-                for t in sharedUsers:
-                    # print("in list of sharedUser")
-                    # print(str(t))
-                    if str(userN) == str(t):
-                        print("this is user is owns this report")
-                        user_reports.append(i.report_name)
+
+    # for i in reports[0:]:
+        # if not i.private:
+        #     user_reports.append(i.report_name)
+        #     sharedUsers = User.objects.filter(report=i.pk)
+            # print("name: %s" % i.report_name)
+        # if (str(i.creator) == str(userN)):
+        #     user_reports.append(i.report_name)
+        # for t in sharedUsers:
+        #     # print("in list of sharedUser")
+        #     # print(str(t))
+        #     if str(userN) == str(t):
+        #         print("this is user is owns this report")
+        #         user_reports.append(i.report_name)
 
     print("\nHere are your reports:\n")
     index = 1
-    for i in user_reports:
+    for i in report_names:
         print("report %s : %s" % (index, i))
         index += 1
 
@@ -224,6 +237,15 @@ def login2():
         else:
             if words[0] == "enter":
                 if int(words[1]) > 0 and int(words[1]) <= len(user_reports):
+                    filesrequest = client.get(report_links[int(words[1])-1])
+                    soup = BeautifulSoup(filesrequest.text, "html.parser")
+                    ul = soup.find("ul")
+
+
+
+
+
+
                     reportN = user_reports[int(words[1]) - 1]  # gets report name
                     rep = report_database.models.Report.objects.get(report_name=reportN)
                     file_list = report_database.models.Documents.objects.filter(report=rep)
@@ -235,7 +257,7 @@ def login2():
 
 
 def listfiles(file_list):
-    files = [];
+    files = []
 
     for i in file_list:
         files.append((i.docfile, i.encrypt))
@@ -305,22 +327,6 @@ def listfiles(file_list):
     return True
 
 
-supports_inactive_user = False
-
-
-def authenticate(username=None, password=None):
-    url = 'https://agile-earth-28935.herokuapp.com/login/'
-    client = requests.session()
-    client.get(url)
-    token = client.cookies['csrftoken']
-    payload = {'username': username, 'password': password, 'csrfmiddlewaretoken': token}
-    loginrequest = client.post(url, data=payload, headers={'Referer': url})
-    if loginrequest.url == urlCheck:
-        return True
-    else:
-        return False
-
-
 if __name__ == "__main__":
     django.setup()
     proj_path = "/Users/jisukim/Desktop/cs3240-s16-team3/SafeCollab"
@@ -331,5 +337,4 @@ if __name__ == "__main__":
     # setup_environ(settings)
     # settings.configure()
     print("Welcome to the fda!")
-    # login2()
-    authenticate('mike', 'mike')
+    login2()
