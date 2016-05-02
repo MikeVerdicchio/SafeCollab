@@ -209,8 +209,9 @@ def fcreate(request):
 def sameGroup(User1, User2):
     g = Group.objects.all()
     for x in g:
-        if (User1 in g.user_set) and (User2 in g.user_set):
-            return True
+        if(x.user_set != None):
+            if (User1 in x.user_set.all()) and (User2 in x.user_set.all()):
+                return True
     return False
 
 def create(request):
@@ -315,10 +316,12 @@ def reportedit(request, report_pk):
     report_data = Report.objects.all()
     readonly = ""
     form = ReportForm( request.POST , request.FILES)
-    if(request.user == r.creator) or UserProfile.objects.get(username=request.user).site_manager is True:
+    if(request.user == r.creator) or UserProfile.objects.get(username=request.user).site_manager is True or sameGroup(r.creator, request.user):
         if request.method == "POST":
             if form.is_valid():
-                report_name = form.cleaned_data["report_name"]
+                report_name = r.report_name
+                if request.user == r.creator:
+                    report_name = form.cleaned_data["report_name"]
                 date = form.cleaned_data['date']
                 sdesc = form.cleaned_data["sdesc"]
                 ldesc = form.cleaned_data['ldesc']
