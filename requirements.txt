@@ -9,3 +9,4 @@ whitenoise==3.0
 django-eztables==0.3.2
 django_extensions==1.6.1
 pygeoip==0.3.2
+beautifulsoup4==4.4.1
