@@ -11,9 +11,11 @@ import django
 import report_database
 import urllib.request
 import auth
+import requests
 
 from Crypto.Cipher import ARC4
 from Crypto import Random
+
 
 def encrypt1(file_path, key):
     enc = ARC4.new(key)
@@ -27,6 +29,7 @@ def encrypt1(file_path, key):
         return True
 
     return False
+
 
 def encrypt2(filename, key):
     enc = ARC4.new(key)
@@ -44,6 +47,7 @@ def encrypt2(filename, key):
         return True
 
     return False
+
 
 def decrypt(ref, key):
     page = urllib.request.urlopen(ref)
@@ -76,7 +80,7 @@ def login():
 
     alldocs = report_database.models.Documents.objects.all()
 
-    if(auth.models.UserProfile.objects.get(username=userN).site_manager):
+    if (auth.models.UserProfile.objects.get(username=userN).site_manager):
         for i in alldocs[0:]:
             files.append((i.docfile, i.encrypt))
     else:
@@ -87,10 +91,10 @@ def login():
                 sharedUsers = User.objects.filter(documents=i.pk)
                 print("in one file %s" % i.docfile)
                 for t in sharedUsers:
-                    #print("inside shared user check")
+                    # print("inside shared user check")
                     print(t)
                     if str(userN) == str(t):
-                        #print("this is true~")
+                        # print("this is true~")
                         files.append((i.docfile, i.encrypt))
 
     print("\nHere are your files:\n")
@@ -116,39 +120,39 @@ def login():
             print("You have not entered a valid command")
         else:
             if words[0] == "download":
-                #print("download")
+                # print("download")
 
-                if files[int(words[1])-1][1]:
+                if files[int(words[1]) - 1][1]:
                     print("This files is encrypted")
                     key = input("Please enter key to decrypt: ")
-                    ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
-                    #for heroku
-                    #ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
+                    ref = "http://127.0.0.1:8000/media/" + str(files[int(words[1]) - 1][0])
+                    # for heroku
+                    # ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
                     if not decrypt(ref, key):
                         print("Your key is not correct")
                     else:
                         print("You have successfully downloaded file %s" % words[1])
 
                 else:
-                    ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
-                    #print(ref)
-                    #for heroku
-                    #ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
-                    download = str(files[int(words[1])-1][0])
-                    #print(download)
+                    ref = "http://127.0.0.1:8000/media/" + str(files[int(words[1]) - 1][0])
+                    # print(ref)
+                    # for heroku
+                    # ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
+                    download = str(files[int(words[1]) - 1][0])
+                    # print(download)
                     urllib.request.urlretrieve(ref, download[10:])
                     print("You have downloaded file %s" % words[1])
             elif words[0] == "encrypt1":
-                #print("encrypt1")
+                # print("encrypt1")
                 key = input("Please enter key to encrypt: ")
                 if not encrypt1(words[1], key):
                     print("You have not entered a valid file")
                 else:
                     print("Encryption successful! You're file is in the current directory.")
             elif words[0] == "encrypt2":
-                #print("encrypt2")
+                # print("encrypt2")
                 key = input("Please enter key to encrypt: ")
-                if not encrypt2(words[1],key):
+                if not encrypt2(words[1], key):
                     print("You have not enetered a valid file")
                 else:
                     print("Encryption successful! You're file is in the current directory.")
@@ -174,13 +178,13 @@ def login2():
         sys.exit()
     files = []
 
-    #alldocs = report_database.models.Documents.objects.all()
+    # alldocs = report_database.models.Documents.objects.all()
 
     reports = report_database.models.Report.objects.all()
 
     user_reports = []
 
-    if(auth.models.UserProfile.objects.get(username=userN).site_manager):
+    if (auth.models.UserProfile.objects.get(username=userN).site_manager):
         for i in reports[0:]:
             user_reports.append(i.report_name)
     else:
@@ -189,12 +193,12 @@ def login2():
                 user_reports.append(i.report_name)
             else:
                 sharedUsers = User.objects.filter(report=i.pk)
-                #print("name: %s" % i.report_name)
-                if(str(i.creator) == str(userN)) :
+                # print("name: %s" % i.report_name)
+                if (str(i.creator) == str(userN)):
                     user_reports.append(i.report_name)
                 for t in sharedUsers:
-                    #print("in list of sharedUser")
-                    #print(str(t))
+                    # print("in list of sharedUser")
+                    # print(str(t))
                     if str(userN) == str(t):
                         print("this is user is owns this report")
                         user_reports.append(i.report_name)
@@ -205,12 +209,11 @@ def login2():
         print("report %s : %s" % (index, i))
         index += 1
 
-
     print("\nPlease enter one of the following commands: ")
     print("exit -> this command exits out of the FDA")
     print("enter (report number) -> this command enters the report and lists all the files\n")
 
-    while(True):
+    while (True):
         text = input()
         if text == "exit":
             break
@@ -221,18 +224,17 @@ def login2():
         else:
             if words[0] == "enter":
                 if int(words[1]) > 0 and int(words[1]) <= len(user_reports):
-                    reportN = user_reports[int(words[1])-1] #gets report name
+                    reportN = user_reports[int(words[1]) - 1]  # gets report name
                     rep = report_database.models.Report.objects.get(report_name=reportN)
                     file_list = report_database.models.Documents.objects.filter(report=rep)
                     listfiles(file_list)
                 else:
                     print("You have not enetered a valid report number")
             else:
-               print("You have not entered a valid command or valid arguments")
+                print("You have not entered a valid command or valid arguments")
 
 
 def listfiles(file_list):
-
     files = [];
 
     for i in file_list:
@@ -262,39 +264,39 @@ def listfiles(file_list):
             print("You have not entered a valid command")
         else:
             if words[0] == "download":
-                #print("download")
+                # print("download")
 
-                if files[int(words[1])-1][1]:
+                if files[int(words[1]) - 1][1]:
                     print("This files is encrypted")
                     key = input("Please enter key to decrypt: ")
-                    #ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
-                    #for heroku
-                    ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
+                    # ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
+                    # for heroku
+                    ref = "https://agile-earth-28935.herokuapp.com/" + str(files[int(words[1]) - 1][0])
                     if not decrypt(ref, key):
                         print("Your key is not correct")
                     else:
                         print("You have successfully downloaded file %s" % words[1])
 
                 else:
-                    #ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
-                    #print(ref)
-                    #for heroku
-                    ref = "https://agile-earth-28935.herokuapp.com/"+str(files[int(words[1])-1][0])
-                    download = str(files[int(words[1])-1][0])
-                    #print(download)
+                    # ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
+                    # print(ref)
+                    # for heroku
+                    ref = "https://agile-earth-28935.herokuapp.com/" + str(files[int(words[1]) - 1][0])
+                    download = str(files[int(words[1]) - 1][0])
+                    # print(download)
                     urllib.request.urlretrieve(ref, download[10:])
                     print("You have downloaded file %s" % words[1])
             elif words[0] == "encrypt1":
-                #print("encrypt1")
+                # print("encrypt1")
                 key = input("Please enter key to encrypt: ")
                 if not encrypt1(words[1], key):
                     print("You have not entered a valid file")
                 else:
                     print("Encryption successful! You're file is in the current directory.")
             elif words[0] == "encrypt2":
-                #print("encrypt2")
+                # print("encrypt2")
                 key = input("Please enter key to encrypt: ")
-                if not encrypt2(words[1],key):
+                if not encrypt2(words[1], key):
                     print("You have not enetered a valid file")
                 else:
                     print("Encryption successful! You're file is in the current directory.")
@@ -303,14 +305,31 @@ def listfiles(file_list):
     return True
 
 
+supports_inactive_user = False
+
+
+def authenticate(username=None, password=None):
+    url = 'https://agile-earth-28935.herokuapp.com/login/'
+    client = requests.session()
+    client.get(url)
+    token = client.cookies['csrftoken']
+    payload = {'username': username, 'password': password, 'csrfmiddlewaretoken': token}
+    loginrequest = client.post(url, data=payload, headers={'Referer': url})
+    if loginrequest.url == urlCheck:
+        return True
+    else:
+        return False
+
+
 if __name__ == "__main__":
     django.setup()
     proj_path = "/Users/jisukim/Desktop/cs3240-s16-team3/SafeCollab"
     sys.path.append(proj_path)
     application = get_wsgi_application()
     os.environ['DJANGO_SETTINGS_MODULE'] = 'SafeCollab.settings'
-    #os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SafeCollab.settings")
-    #setup_environ(settings)
-    #settings.configure()
+    # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SafeCollab.settings")
+    # setup_environ(settings)
+    # settings.configure()
     print("Welcome to the fda!")
-    login2()
+    # login2()
+    authenticate('mike', 'mike')
