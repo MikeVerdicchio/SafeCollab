@@ -76,14 +76,9 @@ def login2():
     table = soup.find("table")
 
     reports = report_database.models.Report.objects.all()
-    # user_reports = []
     report_names = []
     report_links = []
 
-    # if (auth.models.UserProfile.objects.get(username=userN).site_manager):
-    #     for i in reports[0:]:
-    #         user_reports.append(i.report_name)
-    # else:
     for row in table.find_all("tr")[1:]:
         for data in row.find_all("td")[1:2]:
             report_name = data.get_text()
@@ -91,21 +86,6 @@ def login2():
             link = 'https://agile-earth-28935.herokuapp.com' + links.get('href')
         report_names.append(report_name)
         report_links.append(link)
-
-
-        # for i in reports[0:]:
-        # if not i.private:
-        #     user_reports.append(i.report_name)
-        #     sharedUsers = User.objects.filter(report=i.pk)
-        # print("name: %s" % i.report_name)
-        # if (str(i.creator) == str(userN)):
-        #     user_reports.append(i.report_name)
-        # for t in sharedUsers:
-        #     # print("in list of sharedUser")
-        #     # print(str(t))
-        #     if str(userN) == str(t):
-        #         print("this is user is owns this report")
-        #         user_reports.append(i.report_name)
 
     print("\nHere are your reports:\n")
     index = 1
@@ -156,14 +136,12 @@ def login2():
                 else:
                     print("You have not entered a valid report number")
             elif words[0] == "encrypt1":
-                # print("encrypt1")
                 key = input("Please enter key to encrypt: ")
                 if not encrypt1(words[1], key):
                     print("You have not entered a valid file")
                 else:
                     print("Encryption successful! You're file is in the current directory.")
             elif words[0] == "encrypt2":
-                # print("encrypt2")
                 key = input("Please enter key to encrypt: ")
                 if not encrypt2(words[1], key):
                     print("You have not enetered a valid file")
@@ -189,10 +167,7 @@ def listfiles(unencrypted, encrypted):
     print("\nPlease enter one of the following commands: ")
     print("return -> this command returns to the list of reports")
     print("download (file number) -> this command downloads file and decrypts it if it is encrypted")
-    #print("encrypt1 (path to file) -> this command encrypts a file in any location")
-    #print("encrypt2 (file name) -> this command encrypts a file located in current directory\n")
 
-    ###going to download reports###
     while True:
         text = input()
         if text == "return":
@@ -204,13 +179,10 @@ def listfiles(unencrypted, encrypted):
             print("You have not entered a valid command")
         else:
             if words[0] == "download":
-                # print("download")
 
                 if int(words[1]) >= cutoff:
                     print("This files is encrypted")
                     key = input("Please enter key to decrypt: ")
-                    # ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
-                    # for heroku
                     ref = encrypted[int(words[1]) - cutoff]
                     print(ref)
                     page = client.get(ref)
@@ -222,19 +194,14 @@ def listfiles(unencrypted, encrypted):
                     print("You have successfully downloaded file %s" % words[1])
 
                 else:
-                    # ref = "http://127.0.0.1:8000/media/"+str(files[int(words[1])-1][0])
-                    # print(ref)
-                    # for heroku
                     ref = unencrypted[int(words[1]) - 1]
                     download = "Download"
-                    # print(download)
                     file = client.get(ref)
                     new = ref.split("/")
                     name = new[5]
                     with open(name, 'wb') as f:
                         for chunk in file.iter_content(chunk_size=512):
                             f.write(chunk)
-                    # urllib.request.urlretrieve(ref, download)
                     print("You have downloaded file %s" % words[1])
             else:
                 print("You have not entered a valid command")
@@ -247,8 +214,5 @@ if __name__ == "__main__":
     sys.path.append(proj_path)
     application = get_wsgi_application()
     os.environ['DJANGO_SETTINGS_MODULE'] = 'SafeCollab.settings'
-    # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SafeCollab.settings")
-    # setup_environ(settings)
-    # settings.configure()
     print("Welcome to the fda!")
     login2()
