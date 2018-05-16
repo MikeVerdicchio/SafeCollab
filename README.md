@@ -6,17 +6,14 @@ CS3240 - Django Project
 <a name="introduction"></a>Introduction
 ---------------------------------------
 
-This is a private repository dedicated to the final project in CS3240 - Advanced Software Development. The project requires the use of Python and the Django framework to create a web application.
+This repository is dedicated to the final project in CS3240 - Advanced Software Development. The project requires the use of Python and the Django framework to create a web application.
 
 <a name="authors"></a>Authors
 -----------------------------
-Jisu Kim | jk5xe | 804-339-7491
-
-Tahiya Salam | ts7ft | 609-576-8450
-
-Michael Liao | ml4zz | 703-517-3978
-
-Mike Verdicchio | mpv3ms | 804-814-2237
+* Jisu Kim (jk5xe@virginia.edu)
+* Tahiya Salam (ts7ft@virginia.edu)
+* Michael Liao (ml4zz@virginia.edu)
+* Mike Verdicchio (mpv3ms@virginia.edu)
 
 <a name="license"></a>License
 ------------------------------
